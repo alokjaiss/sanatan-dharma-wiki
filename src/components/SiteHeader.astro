@@ -1,0 +1,225 @@
+---
+import SearchForm from './SearchForm.astro';
+import { site } from '../config/site';
+import { t } from '../i18n';
+import { collectionLabel } from '../lib/format';
+import { collectionPath } from '../lib/paths';
+import { COLLECTIONS } from '../lib/schema-meta';
+
+const current = Astro.url.pathname;
+const links = COLLECTIONS.map((collection) => ({
+  href: collectionPath(collection),
+  label: collectionLabel(collection),
+  active: current.startsWith(collectionPath(collection)),
+}));
+---
+
+<header class="site-header">
+  <div class="container bar">
+    <a class="brand" href="/">
+      <span class="bindu" aria-hidden="true"></span>
+      <span class="brand-text">
+        <span class="brand-name">{site.name}</span>
+        <span class="brand-native" lang="sa-Deva">{site.nativeName}</span>
+      </span>
+    </a>
+
+    <nav class="nav-wide" aria-label={t('site.mainNav')}>
+      <ul>
+        {
+          links.map((link) => (
+            <li>
+              <a href={link.href} aria-current={link.active ? 'page' : undefined}>
+                {link.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <div class="search-wide">
+      <SearchForm variant="compact" idSuffix="header" />
+    </div>
+
+    <details class="nav-narrow">
+      <summary>{t('site.menu')}</summary>
+      <div class="drawer">
+        <SearchForm variant="compact" idSuffix="drawer" />
+        <nav aria-label={t('site.mainNav')}>
+          <ul>
+            {
+              links.map((link) => (
+                <li>
+                  <a href={link.href} aria-current={link.active ? 'page' : undefined}>
+                    {link.label}
+                  </a>
+                </li>
+              ))
+            }
+          </ul>
+        </nav>
+      </div>
+    </details>
+  </div>
+  <div class="double-rule"></div>
+</header>
+
+<style>
+  .site-header {
+    position: relative;
+    z-index: 10;
+  }
+
+  .bar {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    padding-block: 0.9rem;
+  }
+
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.7rem;
+    color: var(--ink);
+    text-decoration: none;
+    flex-shrink: 0;
+  }
+
+  /* The bindu: a point within a circle. */
+  .bindu {
+    position: relative;
+    width: 1.7rem;
+    height: 1.7rem;
+    border: 1.5px solid var(--ink);
+    border-radius: 50%;
+  }
+
+  .bindu::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    margin: auto;
+    width: 0.52rem;
+    height: 0.52rem;
+    border-radius: 50%;
+    background: var(--accent);
+  }
+
+  .brand-text {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.1;
+  }
+
+  .brand-name {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 1.15rem;
+    letter-spacing: -0.005em;
+  }
+
+  .brand-native {
+    font-size: 0.78rem;
+    color: var(--ink-faint);
+  }
+
+  .nav-wide ul,
+  .drawer ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .nav-wide ul {
+    display: flex;
+    gap: 1.25rem;
+  }
+
+  .nav-wide a,
+  .drawer a {
+    font-family: var(--font-ui);
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--ink-soft);
+    text-decoration: none;
+    padding-block: 0.3rem;
+    border-bottom: 2px solid transparent;
+  }
+
+  .nav-wide a:hover,
+  .drawer a:hover {
+    color: var(--ink);
+  }
+
+  .nav-wide a[aria-current='page'],
+  .drawer a[aria-current='page'] {
+    color: var(--ink);
+    border-bottom-color: var(--accent);
+  }
+
+  .search-wide {
+    margin-left: auto;
+    width: min(18rem, 30vw);
+  }
+
+  .nav-narrow {
+    display: none;
+    margin-left: auto;
+  }
+
+  .nav-narrow summary {
+    list-style: none;
+    cursor: pointer;
+    font-family: var(--font-ui);
+    font-size: 0.9rem;
+    font-weight: 600;
+    padding: 0.45rem 0.9rem;
+    border: 1px solid var(--rule-strong);
+    border-radius: 999px;
+    color: var(--ink);
+  }
+
+  .nav-narrow summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .nav-narrow[open] summary {
+    border-color: var(--accent);
+  }
+
+  .drawer {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 100%;
+    padding: 1rem var(--gutter) 1.5rem;
+    background: var(--paper-raised);
+    border-bottom: 1px solid var(--rule-strong);
+    box-shadow: var(--shadow-soft);
+  }
+
+  .drawer ul {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.4rem 1rem;
+    margin-top: 1rem;
+  }
+
+  .drawer a {
+    display: inline-block;
+    font-size: 1rem;
+  }
+
+  @media (max-width: 1080px) {
+    .nav-wide,
+    .search-wide {
+      display: none;
+    }
+
+    .nav-narrow {
+      display: block;
+    }
+  }
+</style>

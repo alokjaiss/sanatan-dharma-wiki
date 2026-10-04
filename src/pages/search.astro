@@ -1,0 +1,70 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { t } from '../i18n';
+---
+
+<BaseLayout title={t('search.title')} noindex>
+  <link slot="head" href="/pagefind/pagefind-component-ui.css" rel="stylesheet" />
+  <script slot="head" is:inline type="module" src="/pagefind/pagefind-component-ui.js"></script>
+
+  <div class="container search-page">
+    <header>
+      <h1 class="page-title">{t('search.title')}</h1>
+      <p class="intro">{t('search.intro')}</p>
+      {import.meta.env.DEV && <p class="dev-note">{t('search.devNote')}</p>}
+    </header>
+
+    <pagefind-config bundle-path="/pagefind/" excerpt-length="28" lang="en"></pagefind-config>
+    <div class="search-layout">
+      <div class="search-main">
+        <pagefind-input placeholder={t('search.placeholder')} autofocus></pagefind-input>
+        <pagefind-summary></pagefind-summary>
+        <pagefind-results max-sub-results="2"></pagefind-results>
+      </div>
+      <aside class="search-filters" aria-label={t('search.filters')}>
+        <pagefind-filter-pane expanded></pagefind-filter-pane>
+      </aside>
+    </div>
+  </div>
+
+  <script is:inline type="module">
+    // Run the query passed as ?q= (from the header search box) once the components are ready.
+    const query = new URLSearchParams(window.location.search).get('q');
+    if (query && window.PagefindComponents) {
+      window.PagefindComponents.getInstanceManager().getInstance('default').triggerSearch(query);
+    }
+  </script>
+</BaseLayout>
+
+<style>
+  .search-page header {
+    padding-block: 2.5rem 1.5rem;
+  }
+
+  .intro {
+    margin: 0.75rem 0 0;
+    color: var(--ink-soft);
+    max-width: 42rem;
+  }
+
+  .dev-note {
+    margin-top: 1rem;
+    padding: 0.75rem 1rem;
+    border: 1px dashed var(--rule-strong);
+    border-radius: 0.5rem;
+    font-family: var(--font-ui);
+    font-size: 0.85rem;
+    color: var(--ink-faint);
+  }
+
+  .search-layout {
+    display: grid;
+    gap: 2rem;
+  }
+
+  @media (min-width: 960px) {
+    .search-layout {
+      grid-template-columns: minmax(0, 1fr) 15rem;
+    }
+  }
+</style>

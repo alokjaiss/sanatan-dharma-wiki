@@ -1,0 +1,61 @@
+---
+import ProseLayout from '../layouts/ProseLayout.astro';
+import { site } from '../config/site';
+---
+
+<ProseLayout
+  title="About"
+  kicker={site.name}
+  lede="An open, source-cited encyclopedia of Sanātana Dharma: its texts, their authors and commentators, the ācāryas and saints, their teachings and the traditions that carry them."
+>
+  <h2>What we are building</h2>
+  <p>
+    The aim is the most trustworthy free reference on Sanātana Dharma. Every claim carries a citation. Every
+    tradition is described in its own terms, and traditional and academic views are shown side by side. Texts,
+    teachers and traditions are linked to one another, so a reader can follow a commentary back to its root text,
+    or an ācārya back through their gurus.
+  </p>
+
+  <h2>Who it is for</h2>
+  <p>
+    Seekers and curious readers, students, practitioners exploring traditions beyond their own, and researchers who
+    need a reliable starting point. Entries are written for an educated general reader, and technical terms are
+    glossed when they first appear.
+  </p>
+
+  <h2>What makes it different</h2>
+  <ul>
+    <li>
+      <strong>Relational.</strong> A text links to its authors, its commentaries and the traditions that hold it
+      authoritative. A teacher links to gurus, disciples, works and institutions. These links are computed from the
+      data, so they stay consistent.
+    </li>
+    <li>
+      <strong>Two views, labelled.</strong> Where the traditional account and academic scholarship differ, as they
+      often do on dates and authorship, both are given, each with its source.
+    </li>
+    <li>
+      <strong>Primary text first.</strong> Text entries point to the original text and to openly licensed
+      translations.
+    </li>
+    <li>
+      <strong>Transparent.</strong> Every page shows how it was written and how far it has been verified. See
+      <a href="/how-this-is-written/">how this is written</a>.
+    </li>
+  </ul>
+
+  <h2>Status</h2>
+  <p>
+    The encyclopedia is under construction. The first entries are in place, and new ones are added through reviewed
+    pull requests. The <a href={`${site.repo.url}/blob/main/MASTER_PROMPT.md`}>project plan</a> describes the phases
+    ahead, including a verse-by-verse reader for the primary texts and a Hindi edition.
+  </p>
+
+  <h2>Open source</h2>
+  <p>
+    Everything is developed in the open on <a href={site.repo.url}>GitHub</a>. Original text and data are licensed
+    under <a href={site.license.url} rel="license">{site.license.name}</a>, and the code under the MIT licence.
+    Quoted material keeps its own licence, which is recorded alongside it. Corrections, suggestions and expert
+    reviewers are welcome: see <a href="/contribute/">how to contribute</a>.
+  </p>
+</ProseLayout>

@@ -1,0 +1,485 @@
+---
+import DualDate from './DualDate.astro';
+import EntryLink from './EntryLink.astro';
+import { t } from '../i18n';
+import type { AnyEntry, Library } from '../lib/entries';
+import { collectionLabel, label } from '../lib/format';
+import { refId } from '../lib/graph';
+import { isIndic } from '../lib/text';
+
+interface Props {
+  entry: AnyEntry;
+  library: Library;
+}
+
+const { entry, library } = Astro.props;
+const { graph } = library;
+const ids = (values: unknown[] | undefined) =>
+  (values ?? []).map(refId).filter((id): id is string => id !== undefined);
+const aliases = entry.data.aliases;
+---
+
+<aside class="infobox" aria-label={collectionLabel(entry.collection, 'one')} data-pagefind-ignore>
+  <span class="binding" aria-hidden="true"></span>
+  <p class="kind label">{collectionLabel(entry.collection, 'one')}</p>
+  <dl>
+    {
+      entry.collection === 'texts' && (
+        <>
+          <div class="row">
+            <dt>{t('info.canon')}</dt>
+            <dd>
+              {label('canon', entry.data.canon)}
+              {entry.data.canonNote && <span class="aside">{entry.data.canonNote}</span>}
+            </dd>
+          </div>
+          <div class="row">
+            <dt>{t('info.genre')}</dt>
+            <dd>{label('genre', entry.data.genre)}</dd>
+          </div>
+          {refId(entry.data.partOf) && (
+            <div class="row">
+              <dt>{t('info.partOf')}</dt>
+              <dd>
+                <EntryLink slug={refId(entry.data.partOf)!} library={library} />
+              </dd>
+            </div>
+          )}
+          {refId(entry.data.commentsOn) && (
+            <div class="row">
+              <dt>{t('info.commentsOn')}</dt>
+              <dd>
+                <EntryLink slug={refId(entry.data.commentsOn)!} library={library} />
+              </dd>
+            </div>
+          )}
+          {entry.data.veda && (
+            <div class="row">
+              <dt>{t('info.veda')}</dt>
+              <dd>
+                {label('veda', entry.data.veda)}
+                {entry.data.shakha && <span class="aside">{t('info.shakha')}: {entry.data.shakha}</span>}
+              </dd>
+            </div>
+          )}
+          <div class="row">
+            <dt>{t('info.languages')}</dt>
+            <dd>{entry.data.languages.map((language) => label('language', language)).join(', ')}</dd>
+          </div>
+          {entry.data.authorship.length > 0 && (
+            <div class="row">
+              <dt>{t('info.authorship')}</dt>
+              <dd>
+                <ul>
+                  {entry.data.authorship.map((credit) => (
+                    <li>
+                      <EntryLink slug={refId(credit.person)!} library={library} />
+                      {credit.role !== 'author' && <span class="role"> ({label('role', credit.role)})</span>}
+                      <span class:list={['basis', credit.basis]}>{label('basis', credit.basis)}</span>
+                      {credit.note && <span class="aside">{credit.note}</span>}
+                    </li>
+                  ))}
+                </ul>
+                {entry.data.authorshipNote && <span class="aside">{entry.data.authorshipNote}</span>}
+              </dd>
+            </div>
+          )}
+          {entry.data.authorship.length === 0 && entry.data.authorshipNote && (
+            <div class="row">
+              <dt>{t('info.authorship')}</dt>
+              <dd>{entry.data.authorshipNote}</dd>
+            </div>
+          )}
+          {entry.data.dating && (
+            <div class="row">
+              <dt>{t('info.dating')}</dt>
+              <dd>
+                <DualDate dating={entry.data.dating} />
+              </dd>
+            </div>
+          )}
+          {entry.data.structure && (
+            <div class="row">
+              <dt>{t('info.structure')}</dt>
+              <dd>{entry.data.structure}</dd>
+            </div>
+          )}
+          {entry.data.deities.length > 0 && (
+            <div class="row">
+              <dt>{t('info.deities')}</dt>
+              <dd class="links">
+                {ids(entry.data.deities).map((slug) => (
+                  <EntryLink slug={slug} library={library} />
+                ))}
+              </dd>
+            </div>
+          )}
+          {(graph.authoritativeIn.get(entry.id) ?? []).length > 0 && (
+            <div class="row">
+              <dt>{t('info.authoritativeIn')}</dt>
+              <dd class="links">
+                {(graph.authoritativeIn.get(entry.id) ?? []).map((slug) => (
+                  <EntryLink slug={slug} library={library} />
+                ))}
+              </dd>
+            </div>
+          )}
+        </>
+      )
+    }
+
+    {
+      entry.collection === 'people' && (
+        <>
+          <div class="row">
+            <dt>{t('info.roles')}</dt>
+            <dd>{entry.data.roles.map((role) => label('personRole', role)).join(', ')}</dd>
+          </div>
+          {entry.data.traditions.length > 0 && (
+            <div class="row">
+              <dt>{t('info.traditions')}</dt>
+              <dd class="links">
+                {ids(entry.data.traditions).map((slug) => (
+                  <EntryLink slug={slug} library={library} />
+                ))}
+              </dd>
+            </div>
+          )}
+          {entry.data.gurus.length > 0 && (
+            <div class="row">
+              <dt>{t('info.gurus')}</dt>
+              <dd>
+                <ul>
+                  {entry.data.gurus.map((guru) => (
+                    <li>
+                      <EntryLink slug={refId(guru.person)!} library={library} />
+                      <span class="aside inline">{label('guru', guru.kind)}</span>
+                    </li>
+                  ))}
+                </ul>
+              </dd>
+            </div>
+          )}
+          {entry.data.dating && (
+            <div class="row">
+              <dt>{t('info.lived')}</dt>
+              <dd>
+                <DualDate dating={entry.data.dating} />
+              </dd>
+            </div>
+          )}
+          {refId(entry.data.birthplace) && (
+            <div class="row">
+              <dt>{t('info.birthplace')}</dt>
+              <dd>
+                <EntryLink slug={refId(entry.data.birthplace)!} library={library} />
+              </dd>
+            </div>
+          )}
+          {entry.data.region && (
+            <div class="row">
+              <dt>{t('info.region')}</dt>
+              <dd>{entry.data.region}</dd>
+            </div>
+          )}
+          {entry.data.languages.length > 0 && (
+            <div class="row">
+              <dt>{t('info.languages')}</dt>
+              <dd>{entry.data.languages.map((language) => label('language', language)).join(', ')}</dd>
+            </div>
+          )}
+        </>
+      )
+    }
+
+    {
+      entry.collection === 'traditions' && (
+        <>
+          <div class="row">
+            <dt>{t('info.kind')}</dt>
+            <dd>{label('traditionKind', entry.data.kind)}</dd>
+          </div>
+          {refId(entry.data.parent) && (
+            <div class="row">
+              <dt>{t('info.parent')}</dt>
+              <dd>
+                <EntryLink slug={refId(entry.data.parent)!} library={library} />
+              </dd>
+            </div>
+          )}
+          {entry.data.founders.length > 0 && (
+            <div class="row">
+              <dt>{t('info.founders')}</dt>
+              <dd class="links">
+                {ids(entry.data.founders).map((slug) => (
+                  <EntryLink slug={slug} library={library} />
+                ))}
+              </dd>
+            </div>
+          )}
+          {entry.data.coreTexts.length > 0 && (
+            <div class="row">
+              <dt>{t('info.coreTexts')}</dt>
+              <dd>
+                <ol class="ordered">
+                  {ids(entry.data.coreTexts).map((slug) => (
+                    <li>
+                      <EntryLink slug={slug} library={library} />
+                    </li>
+                  ))}
+                </ol>
+              </dd>
+            </div>
+          )}
+          {entry.data.deityFocus.length > 0 && (
+            <div class="row">
+              <dt>{t('info.deityFocus')}</dt>
+              <dd class="links">
+                {ids(entry.data.deityFocus).map((slug) => (
+                  <EntryLink slug={slug} library={library} />
+                ))}
+              </dd>
+            </div>
+          )}
+          {entry.data.dating && (
+            <div class="row">
+              <dt>{t('info.emergence')}</dt>
+              <dd>
+                <DualDate dating={entry.data.dating} />
+              </dd>
+            </div>
+          )}
+        </>
+      )
+    }
+
+    {
+      entry.collection === 'concepts' && (
+        <>
+          {entry.data.domain && (
+            <div class="row">
+              <dt>{t('info.domain')}</dt>
+              <dd>{label('domain', entry.data.domain)}</dd>
+            </div>
+          )}
+          {(graph.relatedConcepts.get(entry.id) ?? []).length > 0 && (
+            <div class="row">
+              <dt>{t('info.related')}</dt>
+              <dd class="links">
+                {(graph.relatedConcepts.get(entry.id) ?? []).map((slug) => (
+                  <EntryLink slug={slug} library={library} />
+                ))}
+              </dd>
+            </div>
+          )}
+        </>
+      )
+    }
+
+    {
+      entry.collection === 'places' && (
+        <>
+          <div class="row">
+            <dt>{t('info.kind')}</dt>
+            <dd>{label('placeKind', entry.data.kind)}</dd>
+          </div>
+          {entry.data.tags.length > 0 && (
+            <div class="row">
+              <dt>{t('info.tags')}</dt>
+              <dd>{entry.data.tags.map((tag) => label('placeTag', tag)).join(', ')}</dd>
+            </div>
+          )}
+          <div class="row">
+            <dt>{t('info.location')}</dt>
+            <dd>
+              {entry.data.location.region}, {entry.data.location.country}
+            </dd>
+          </div>
+          {entry.data.traditions.length > 0 && (
+            <div class="row">
+              <dt>{t('info.traditions')}</dt>
+              <dd class="links">
+                {ids(entry.data.traditions).map((slug) => (
+                  <EntryLink slug={slug} library={library} />
+                ))}
+              </dd>
+            </div>
+          )}
+          {entry.data.people.length > 0 && (
+            <div class="row">
+              <dt>{t('info.associated')}</dt>
+              <dd class="links">
+                {ids(entry.data.people).map((slug) => (
+                  <EntryLink slug={slug} library={library} />
+                ))}
+              </dd>
+            </div>
+          )}
+          {entry.data.dating && (
+            <div class="row">
+              <dt>{t('info.founded')}</dt>
+              <dd>
+                <DualDate dating={entry.data.dating} />
+              </dd>
+            </div>
+          )}
+        </>
+      )
+    }
+
+    {
+      entry.collection === 'deities' && (graph.relatedDeities.get(entry.id) ?? []).length > 0 && (
+        <div class="row">
+          <dt>{t('info.related')}</dt>
+          <dd class="links">
+            {(graph.relatedDeities.get(entry.id) ?? []).map((slug) => (
+              <EntryLink slug={slug} library={library} />
+            ))}
+          </dd>
+        </div>
+      )
+    }
+
+    {
+      aliases.length > 0 && (
+        <div class="row">
+          <dt>{t('entry.alsoKnownAs')}</dt>
+          <dd class="aliases">
+            {aliases.map((alias) =>
+              isIndic(alias) ? <span lang="sa-Deva">{alias}</span> : <span>{alias}</span>,
+            )}
+          </dd>
+        </div>
+      )
+    }
+  </dl>
+</aside>
+
+<style>
+  /* A palm-leaf folio: warm leaf ground, a double frame, one binding hole. */
+  .infobox {
+    position: relative;
+    background: var(--leaf);
+    border: 1px solid var(--leaf-edge);
+    border-radius: 0.75rem;
+    padding: 1.25rem 1.3rem 1.1rem 2.1rem;
+    box-shadow: var(--shadow-soft);
+    font-size: 0.92rem;
+    line-height: 1.55;
+  }
+
+  .infobox::after {
+    content: '';
+    position: absolute;
+    inset: 5px;
+    border: 1px solid color-mix(in srgb, var(--leaf-edge) 70%, transparent);
+    border-radius: 0.55rem;
+    pointer-events: none;
+  }
+
+  .binding {
+    position: absolute;
+    left: 0.85rem;
+    top: 1.55rem;
+    width: 0.55rem;
+    height: 0.55rem;
+    border-radius: 50%;
+    background: var(--paper);
+    box-shadow: inset 0 1px 2px rgb(0 0 0 / 25%);
+  }
+
+  .kind {
+    margin: 0 0 0.75rem;
+    color: var(--accent);
+  }
+
+  dl {
+    margin: 0;
+  }
+
+  .row {
+    padding: 0.6rem 0;
+    border-top: 1px solid color-mix(in srgb, var(--leaf-edge) 65%, transparent);
+  }
+
+  dt {
+    font-family: var(--font-ui);
+    font-size: 0.68rem;
+    font-weight: 650;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 0.15rem;
+  }
+
+  dd {
+    margin: 0;
+  }
+
+  ul,
+  ol {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  li + li {
+    margin-top: 0.3rem;
+  }
+
+  .ordered {
+    list-style: decimal;
+    padding-left: 1.2rem;
+  }
+
+  .links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.15rem 0.85rem;
+  }
+
+  .aside {
+    display: block;
+    margin-top: 0.2rem;
+    font-size: 0.8rem;
+    color: var(--ink-soft);
+  }
+
+  .aside.inline {
+    display: inline;
+    margin-left: 0.4rem;
+  }
+
+  .basis {
+    display: inline-block;
+    margin-left: 0.45rem;
+    padding: 0 0.45rem;
+    border-radius: 999px;
+    font-family: var(--font-ui);
+    font-size: 0.66rem;
+    font-weight: 650;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    vertical-align: 0.1em;
+    border: 1px solid currentColor;
+  }
+
+  .basis.traditional {
+    color: var(--saffron);
+  }
+
+  .basis.scholarly {
+    color: var(--ink-soft);
+  }
+
+  .basis.disputed {
+    color: var(--accent);
+  }
+
+  .aliases {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.1rem 0.75rem;
+    color: var(--ink-soft);
+  }
+</style>

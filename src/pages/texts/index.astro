@@ -1,0 +1,43 @@
+---
+import EntryCard from '../../components/EntryCard.astro';
+import CollectionLayout from '../../layouts/CollectionLayout.astro';
+import { entriesOf, loadLibrary } from '../../lib/entries';
+import { label } from '../../lib/format';
+import { CANONS, TEXT_GENRES } from '../../lib/schema-meta';
+
+const library = await loadLibrary();
+const texts = entriesOf(library, 'texts');
+const sections = CANONS.map((canon) => ({
+  canon,
+  genres: TEXT_GENRES.map((genre) => ({
+    genre,
+    entries: texts.filter((entry) => entry.data.canon === canon && entry.data.genre === genre),
+  })).filter((group) => group.entries.length > 0),
+})).filter((section) => section.genres.length > 0);
+---
+
+<CollectionLayout
+  collection="texts"
+  count={texts.length}
+  sections={sections.map((section) => ({ id: section.canon, label: label('canon', section.canon) }))}
+>
+  {
+    sections.map((section) => (
+      <section class="index-section" id={section.canon} aria-labelledby={`heading-${section.canon}`}>
+        <h2 id={`heading-${section.canon}`}>{label('canon', section.canon)}</h2>
+        {section.genres.map((group) => (
+          <>
+            <h3 class="group-title">{label('genre', group.genre)}</h3>
+            <ul class="card-grid">
+              {group.entries.map((entry) => (
+                <li>
+                  <EntryCard entry={entry} level="h4" />
+                </li>
+              ))}
+            </ul>
+          </>
+        ))}
+      </section>
+    ))
+  }
+</CollectionLayout>

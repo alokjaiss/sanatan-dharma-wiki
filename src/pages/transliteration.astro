@@ -1,0 +1,190 @@
+---
+import ProseLayout from '../layouts/ProseLayout.astro';
+
+const vowels = [
+  ['अ', 'a'],
+  ['आ', 'ā'],
+  ['इ', 'i'],
+  ['ई', 'ī'],
+  ['उ', 'u'],
+  ['ऊ', 'ū'],
+  ['ऋ', 'ṛ'],
+  ['ॠ', 'ṝ'],
+  ['ऌ', 'ḷ'],
+  ['ॡ', 'ḹ'],
+  ['ए', 'e'],
+  ['ऐ', 'ai'],
+  ['ओ', 'o'],
+  ['औ', 'au'],
+  ['अं', 'aṃ'],
+  ['अः', 'aḥ'],
+];
+
+const consonants = [
+  ['क', 'ka'],
+  ['ख', 'kha'],
+  ['ग', 'ga'],
+  ['घ', 'gha'],
+  ['ङ', 'ṅa'],
+  ['च', 'ca'],
+  ['छ', 'cha'],
+  ['ज', 'ja'],
+  ['झ', 'jha'],
+  ['ञ', 'ña'],
+  ['ट', 'ṭa'],
+  ['ठ', 'ṭha'],
+  ['ड', 'ḍa'],
+  ['ढ', 'ḍha'],
+  ['ण', 'ṇa'],
+  ['त', 'ta'],
+  ['थ', 'tha'],
+  ['द', 'da'],
+  ['ध', 'dha'],
+  ['न', 'na'],
+  ['प', 'pa'],
+  ['फ', 'pha'],
+  ['ब', 'ba'],
+  ['भ', 'bha'],
+  ['म', 'ma'],
+  ['य', 'ya'],
+  ['र', 'ra'],
+  ['ल', 'la'],
+  ['व', 'va'],
+  ['श', 'śa'],
+  ['ष', 'ṣa'],
+  ['स', 'sa'],
+  ['ह', 'ha'],
+];
+---
+
+<ProseLayout
+  title="Transliteration"
+  kicker="Conventions"
+  lede="How Sanskrit and other Indian-language names are written in this encyclopedia, and how to search for them."
+>
+  <h2>Three forms of every name</h2>
+  <p>Each entry gives its name three ways:</p>
+  <ul>
+    <li>
+      <strong>A common English form</strong> for the title, as most readers would search for it: <em>Bhagavad Gita</em>,
+      <em>Adi Shankaracharya</em>.
+    </li>
+    <li>
+      <strong>A precise romanisation</strong>: <em lang="sa-Latn">Bhagavadgītā</em>, <em lang="sa-Latn">Ādi Śaṅkarācārya</em>.
+      Sanskrit uses IAST, the International Alphabet of Sanskrit Transliteration. Other Indian languages use ISO 15919.
+    </li>
+    <li>
+      <strong>The native script</strong>: <span lang="sa-Deva">भगवद्गीता</span>,
+      <span lang="sa-Deva">आदि शङ्कराचार्य</span>.
+    </li>
+  </ul>
+  <p>
+    Search understands all three. <em>shankara</em>, <em lang="sa-Latn">śaṅkara</em>,
+    <span lang="sa-Deva">शङ्कर</span> and <span lang="sa-Deva">शंकर</span> all find the same entry.
+  </p>
+
+  <h2>IAST at a glance</h2>
+  <h3>Vowels and marks</h3>
+  <table class="iast">
+    <thead>
+      <tr>
+        <th scope="col">Devanagari</th>
+        <th scope="col">IAST</th>
+        <th scope="col">Devanagari</th>
+        <th scope="col">IAST</th>
+      </tr>
+    </thead>
+    <tbody>
+      {
+        Array.from({ length: Math.ceil(vowels.length / 2) }, (_, row) => (
+          <tr>
+            {[vowels[row * 2], vowels[row * 2 + 1]].map((pair) =>
+              pair ? (
+                <>
+                  <td lang="sa-Deva">{pair[0]}</td>
+                  <td lang="sa-Latn">{pair[1]}</td>
+                </>
+              ) : (
+                <>
+                  <td></td>
+                  <td></td>
+                </>
+              ),
+            )}
+          </tr>
+        ))
+      }
+    </tbody>
+  </table>
+
+  <h3>Consonants</h3>
+  <table class="iast">
+    <thead>
+      <tr>
+        <th scope="col">Devanagari</th>
+        <th scope="col">IAST</th>
+        <th scope="col">Devanagari</th>
+        <th scope="col">IAST</th>
+        <th scope="col">Devanagari</th>
+        <th scope="col">IAST</th>
+      </tr>
+    </thead>
+    <tbody>
+      {
+        Array.from({ length: Math.ceil(consonants.length / 3) }, (_, row) => (
+          <tr>
+            {[0, 1, 2].map((column) => {
+              const pair = consonants[row * 3 + column];
+              return pair ? (
+                <>
+                  <td lang="sa-Deva">{pair[0]}</td>
+                  <td lang="sa-Latn">{pair[1]}</td>
+                </>
+              ) : (
+                <>
+                  <td></td>
+                  <td></td>
+                </>
+              );
+            })}
+          </tr>
+        ))
+      }
+    </tbody>
+  </table>
+
+  <h2>Reading IAST</h2>
+  <ul>
+    <li>A line over a vowel lengthens it: <em lang="sa-Latn">ā</em> is held about twice as long as <em lang="sa-Latn">a</em>.</li>
+    <li><em lang="sa-Latn">c</em> is the <em>ch</em> of English <em>church</em>, so <em lang="sa-Latn">Caitanya</em> is usually written <em>Chaitanya</em>.</li>
+    <li><em lang="sa-Latn">ś</em> and <em lang="sa-Latn">ṣ</em> are both close to English <em>sh</em>.</li>
+    <li><em lang="sa-Latn">ṛ</em> is a vowel, often written <em>ri</em> in English: <em lang="sa-Latn">Ṛgveda</em>, <em>Rigveda</em>.</li>
+    <li>A dot beneath <em lang="sa-Latn">ṭ ḍ ṇ</em> marks retroflex sounds, made with the tongue curled back.</li>
+    <li><em lang="sa-Latn">h</em> after a consonant marks aspiration: <em lang="sa-Latn">kh</em> as in <em>blockhead</em>, never as in <em>shoe</em>.</li>
+  </ul>
+
+  <h2>Web addresses</h2>
+  <p>
+    Entry addresses use plain ASCII: diacritics are dropped, <em lang="sa-Latn">ś</em> and
+    <em lang="sa-Latn">ṣ</em> become <em>sh</em>, <em lang="sa-Latn">ṛ</em> becomes <em>ri</em> and
+    <em lang="sa-Latn">c</em> becomes <em>ch</em>. For example, <code>/texts/rigveda/</code> and
+    <code>/people/adi-shankaracharya/</code>.
+  </p>
+</ProseLayout>
+
+<style>
+  .iast {
+    display: table;
+    width: auto;
+    margin-bottom: 1.5rem;
+  }
+
+  .iast td {
+    padding: 0.35rem 1.4rem 0.35rem 0;
+    font-size: 1.05rem;
+  }
+
+  .iast td:nth-child(odd) {
+    font-size: 1.2rem;
+  }
+</style>

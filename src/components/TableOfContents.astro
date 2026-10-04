@@ -1,0 +1,79 @@
+---
+import { t } from '../i18n';
+
+interface Heading {
+  depth: number;
+  slug: string;
+  text: string;
+}
+
+interface Props {
+  headings: Heading[];
+}
+
+const items = Astro.props.headings.filter(
+  (heading) => heading.depth <= 3 && heading.slug !== 'footnote-label',
+);
+---
+
+{
+  items.length > 1 && (
+    <nav class="toc" aria-labelledby="toc-title" data-pagefind-ignore>
+      <details open>
+        <summary id="toc-title" class="label">
+          {t('entry.onThisPage')}
+        </summary>
+        <ol>
+          {items.map((heading) => (
+            <li class:list={[`depth-${heading.depth}`]}>
+              <a href={`#${heading.slug}`}>{heading.text}</a>
+            </li>
+          ))}
+        </ol>
+      </details>
+    </nav>
+  )
+}
+
+<style>
+  .toc {
+    font-family: var(--font-ui);
+    font-size: 0.84rem;
+  }
+
+  summary {
+    cursor: pointer;
+    list-style: none;
+    margin-bottom: 0.6rem;
+  }
+
+  summary::-webkit-details-marker {
+    display: none;
+  }
+
+  ol {
+    list-style: none;
+    margin: 0;
+    padding: 0 0 0 0.85rem;
+    border-left: 1px solid var(--rule-strong);
+  }
+
+  li {
+    margin: 0.35rem 0;
+    line-height: 1.35;
+  }
+
+  .depth-3 {
+    padding-left: 0.85rem;
+    font-size: 0.8rem;
+  }
+
+  a {
+    color: var(--ink-soft);
+    text-decoration: none;
+  }
+
+  a:hover {
+    color: var(--accent);
+  }
+</style>

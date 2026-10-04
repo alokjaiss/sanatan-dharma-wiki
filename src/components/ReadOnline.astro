@@ -1,0 +1,80 @@
+---
+import { t } from '../i18n';
+import { label } from '../lib/format';
+
+interface Link {
+  label: string;
+  url: string;
+  kind: string;
+  language: string;
+  license: string;
+}
+
+interface Props {
+  links: Link[];
+}
+
+const { links } = Astro.props;
+---
+
+{
+  links.length > 0 && (
+    <section class="read" aria-labelledby="read-title">
+      <h2 id="read-title">{t('entry.readOnline')}</h2>
+      <ul>
+        {links.map((link) => (
+          <li>
+            <a href={link.url} rel="noopener">
+              {link.label}
+            </a>
+            <span class="meta">
+              {label('readKind', link.kind)} · {label('language', link.language)} ·{' '}
+              <span class:list={['licence', link.license]}>{label('licence', link.license)}</span>
+            </span>
+          </li>
+        ))}
+      </ul>
+    </section>
+  )
+}
+
+<style>
+  .read {
+    margin-top: 2.5rem;
+  }
+
+  h2 {
+    font-family: var(--font-display);
+    font-size: 1.35rem;
+    font-weight: 560;
+    margin: 0 0 0.9rem;
+  }
+
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0.6rem;
+  }
+
+  li {
+    padding: 0.75rem 1rem;
+    background: var(--paper-raised);
+    border: 1px solid var(--rule);
+    border-radius: 0.5rem;
+  }
+
+  .meta {
+    display: block;
+    font-family: var(--font-ui);
+    font-size: 0.76rem;
+    color: var(--ink-faint);
+    margin-top: 0.15rem;
+  }
+
+  .licence.public-domain,
+  .licence.open-license {
+    color: var(--human-ink);
+  }
+</style>

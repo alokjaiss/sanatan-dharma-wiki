@@ -1,19 +1,371 @@
 ---
-import '../styles/global.css';
+import EntryCard from '../components/EntryCard.astro';
+import SearchForm from '../components/SearchForm.astro';
+import VerificationBadge from '../components/VerificationBadge.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
 import { site } from '../config/site';
 import { t } from '../i18n';
+import { entriesOf, loadLibrary } from '../lib/entries';
+import { collectionLabel, countLabel } from '../lib/format';
+import { collectionPath } from '../lib/paths';
+import { COLLECTIONS, VERIFICATION_LEVELS } from '../lib/schema-meta';
+import { isIndic } from '../lib/text';
+
+const library = await loadLibrary();
+const texts = entriesOf(library, 'texts');
+const traditions = entriesOf(library, 'traditions');
+
+const canon = [
+  { key: 'shruti', href: '/texts/#shruti', count: texts.filter((e) => e.data.canon === 'shruti').length },
+  { key: 'smriti', href: '/texts/#smriti', count: texts.filter((e) => e.data.canon === 'smriti').length },
+  { key: 'darshana', href: '/traditions/', count: traditions.filter((e) => e.data.kind === 'darshana').length },
+  {
+    key: 'agama',
+    href: '/texts/',
+    count: texts.filter((e) => e.data.genre === 'agama' || e.data.genre === 'tantra').length,
+  },
+  { key: 'bhakti', href: '/texts/', count: texts.filter((e) => e.data.genre === 'bhakti-poetry').length },
+] as const;
+
+const collections = COLLECTIONS.map((collection) => ({
+  collection,
+  count: library.all.filter((entry) => entry.collection === collection).length,
+}));
+
+const recent = library.all
+  .filter((entry) => entry.data.status === 'published')
+  .sort((a, b) => b.data.created.getTime() - a.data.created.getTime() || a.data.title.localeCompare(b.data.title))
+  .slice(0, 6);
+
+const tries = ['Bhagavad Gita', 'śaṅkara', 'धर्म'];
 ---
 
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>{site.name}</title>
-  </head>
-  <body>
-    <main>
-      <h1>{site.name}</h1>
-      <p>{t('site.underConstruction')}</p>
-    </main>
-  </body>
-</html>
+<BaseLayout>
+  <section class="hero container">
+    <p class="watermark" lang="sa-Deva" aria-hidden="true">{site.nativeName}</p>
+    <p class="label kicker rise" lang="sa-Deva">{site.nativeName}</p>
+    <h1 class="page-title hero-title rise">{t('home.title')}</h1>
+    <p class="lede rise rise-2">{t('home.lede')}</p>
+    <div class="hero-search rise rise-3">
+      <SearchForm variant="hero" idSuffix="home" />
+      <p class="tries">
+        <span class="label">{t('home.try')}</span>
+        {
+          tries.map((query) => (
+            <a href={`/search/?q=${encodeURIComponent(query)}`} lang={isIndic(query) ? 'sa-Deva' : undefined}>
+              {query}
+            </a>
+          ))
+        }
+      </p>
+    </div>
+  </section>
+
+  <section class="container band" aria-labelledby="canon-title">
+    <h2 id="canon-title" class="section-title">{t('home.explore')}</h2>
+    <ul class="canon">
+      {
+        canon.map((item) => (
+          <li>
+            {item.count > 0 ? (
+              <a href={item.href} class="tile">
+                <span class="tile-name">{t(`canon.${item.key}`)}</span>
+                <span class="tile-blurb">{t(`canon.${item.key}.blurb`)}</span>
+                <span class="tile-count">{countLabel(item.count)}</span>
+              </a>
+            ) : (
+              <div class="tile muted">
+                <span class="tile-name">{t(`canon.${item.key}`)}</span>
+                <span class="tile-blurb">{t(`canon.${item.key}.blurb`)}</span>
+                <span class="tile-count">{t('home.inPreparation')}</span>
+              </div>
+            )}
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+
+  <section class="container band" aria-labelledby="collections-title">
+    <h2 id="collections-title" class="section-title">{t('home.collections')}</h2>
+    <ul class="collections">
+      {
+        collections.map(({ collection, count }) => (
+          <li>
+            <a class="collection" href={collectionPath(collection)}>
+              <span class="collection-name">{collectionLabel(collection)}</span>
+              <span class="collection-blurb">{t(`collection.${collection}.blurb`)}</span>
+              <span class="collection-count">{countLabel(count)}</span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+
+  {
+    recent.length > 0 && (
+      <section class="container band" aria-labelledby="recent-title">
+        <h2 id="recent-title" class="section-title">
+          {t('home.recent')}
+        </h2>
+        <ul class="card-grid">
+          {recent.map((entry) => (
+            <li>
+              <EntryCard entry={entry} showCollection />
+            </li>
+          ))}
+        </ul>
+      </section>
+    )
+  }
+
+  <section class="container band" aria-labelledby="method-title">
+    <div class="method">
+      <h2 id="method-title" class="section-title">{t('home.method')}</h2>
+      <p>{t('home.methodBody')}</p>
+      <ul class="levels">
+        {
+          VERIFICATION_LEVELS.map((level) => (
+            <li>
+              <VerificationBadge level={level} />
+              <span>{t(`verification.${level}.hint`)}</span>
+            </li>
+          ))
+        }
+      </ul>
+      <p><a href="/how-this-is-written/">{t('home.methodLink')}</a></p>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .hero {
+    position: relative;
+    padding-block: clamp(3rem, 8vw, 6.5rem) clamp(2.5rem, 6vw, 4.5rem);
+    overflow: hidden;
+  }
+
+  .watermark {
+    position: absolute;
+    right: -0.05em;
+    top: 50%;
+    transform: translateY(-50%);
+    margin: 0;
+    font-size: clamp(6rem, 4rem + 13vw, 15rem);
+    line-height: 1;
+    white-space: nowrap;
+    color: var(--ink);
+    opacity: 0.045;
+    pointer-events: none;
+    user-select: none;
+  }
+
+  .kicker {
+    color: var(--accent);
+    font-size: 0.95rem;
+    letter-spacing: 0.04em;
+    text-transform: none;
+    margin: 0 0 0.75rem;
+  }
+
+  .hero-title {
+    max-width: 16ch;
+    font-size: clamp(2.6rem, 1.5rem + 4.6vw, 5rem);
+  }
+
+  .lede {
+    max-width: 40rem;
+    margin: 1.4rem 0 0;
+    font-size: clamp(1.1rem, 1rem + 0.5vw, 1.3rem);
+    line-height: 1.6;
+    color: var(--ink-soft);
+  }
+
+  .hero-search {
+    max-width: 40rem;
+    margin-top: 2.25rem;
+  }
+
+  .tries {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.35rem 1rem;
+    margin: 0.9rem 0 0 0.25rem;
+    font-size: 0.95rem;
+  }
+
+  .band {
+    padding-block: 1.25rem 2.5rem;
+  }
+
+  .section-title {
+    font-family: var(--font-display);
+    font-weight: 560;
+    font-size: 1.65rem;
+    margin: 0 0 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .section-title::after {
+    content: '';
+    flex: 1;
+    height: 4px;
+    border-top: 1px solid var(--rule-strong);
+    border-bottom: 1px solid var(--rule-strong);
+  }
+
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .canon {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 12.5rem), 1fr));
+    gap: 0.9rem;
+  }
+
+  .tile {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    height: 100%;
+    padding: 1.1rem 1.15rem 1rem;
+    background: var(--leaf);
+    border: 1px solid var(--leaf-edge);
+    border-radius: 0.7rem;
+    color: var(--ink);
+    text-decoration: none;
+    transition:
+      transform 140ms ease,
+      box-shadow 140ms ease;
+  }
+
+  a.tile:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-soft);
+  }
+
+  .tile.muted {
+    background: transparent;
+    border-style: dashed;
+    color: var(--ink-faint);
+  }
+
+  .tile-name {
+    font-family: var(--font-display);
+    font-size: 1.3rem;
+    font-weight: 600;
+  }
+
+  .tile-blurb {
+    font-size: 0.88rem;
+    color: var(--ink-soft);
+  }
+
+  .tile-count {
+    margin-top: auto;
+    padding-top: 0.6rem;
+    font-family: var(--font-ui);
+    font-size: 0.74rem;
+    font-weight: 650;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+
+  .muted .tile-count {
+    color: var(--ink-faint);
+  }
+
+  .collections {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 19rem), 1fr));
+    border-top: 1px solid var(--rule);
+  }
+
+  .collection {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 0.15rem 1rem;
+    padding: 1.1rem 0.25rem;
+    border-bottom: 1px solid var(--rule);
+    color: var(--ink);
+    text-decoration: none;
+  }
+
+  .collection-name {
+    font-family: var(--font-display);
+    font-size: 1.35rem;
+    font-weight: 600;
+  }
+
+  .collection:hover .collection-name {
+    color: var(--accent);
+  }
+
+  .collection-count {
+    grid-column: 2;
+    grid-row: 1;
+    align-self: center;
+    font-family: var(--font-ui);
+    font-size: 0.78rem;
+    color: var(--ink-faint);
+  }
+
+  .collection-blurb {
+    grid-column: 1 / -1;
+    font-size: 0.92rem;
+    color: var(--ink-soft);
+  }
+
+  @media (min-width: 640px) {
+    .collections li:nth-child(odd) .collection {
+      padding-right: 2rem;
+    }
+  }
+
+  .method {
+    max-width: 46rem;
+    padding: 1.6rem 1.75rem;
+    background: var(--paper-raised);
+    border: 1px solid var(--rule);
+    border-radius: 0.8rem;
+  }
+
+  .method .section-title::after {
+    display: none;
+  }
+
+  .method p {
+    margin: 0 0 1rem;
+    color: var(--ink-soft);
+  }
+
+  .levels {
+    display: grid;
+    gap: 0.6rem;
+    margin-bottom: 1.2rem;
+  }
+
+  .levels li {
+    display: grid;
+    grid-template-columns: 10.5rem 1fr;
+    gap: 0.75rem;
+    align-items: baseline;
+    font-size: 0.92rem;
+    color: var(--ink-soft);
+  }
+
+  @media (max-width: 560px) {
+    .levels li {
+      grid-template-columns: 1fr;
+      gap: 0.3rem;
+    }
+  }
+</style>

@@ -1,0 +1,60 @@
+---
+import { t } from '../i18n';
+
+export interface Crumb {
+  label: string;
+  href: string;
+}
+
+interface Props {
+  items: Crumb[];
+}
+
+const { items } = Astro.props;
+---
+
+<nav class="breadcrumbs" aria-label={t('entry.breadcrumb')} data-pagefind-ignore>
+  <ol>
+    {
+      items.map((item, position) => (
+        <li>
+          {position < items.length - 1 ? (
+            <a href={item.href}>{item.label}</a>
+          ) : (
+            <span aria-current="page">{item.label}</span>
+          )}
+        </li>
+      ))
+    }
+  </ol>
+</nav>
+
+<style>
+  ol {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem 0;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    font-family: var(--font-ui);
+    font-size: 0.8rem;
+    color: var(--ink-faint);
+  }
+
+  li + li::before {
+    content: '›';
+    margin: 0 0.55rem;
+    color: var(--rule-strong);
+  }
+
+  a {
+    color: var(--ink-soft);
+    text-decoration: none;
+  }
+
+  a:hover {
+    color: var(--accent);
+    text-decoration: underline;
+  }
+</style>

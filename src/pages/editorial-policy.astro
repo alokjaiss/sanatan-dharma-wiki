@@ -1,0 +1,21 @@
+---
+import { Content } from '../../docs/CONTENT_GUIDE.md';
+import ProseLayout from '../layouts/ProseLayout.astro';
+---
+
+<ProseLayout
+  title="Editorial policy"
+  kicker="Conventions"
+  lede="The rules every entry follows, whoever writes it. This page is generated from the same guide the writers and agents use."
+>
+  <div class="document">
+    <Content />
+  </div>
+</ProseLayout>
+
+<style>
+  /* The guide's own H1 duplicates the page title. */
+  .document :global(h1) {
+    display: none;
+  }
+</style>

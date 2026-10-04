@@ -1,0 +1,25 @@
+---
+import { render } from 'astro:content';
+import EntryLayout from '../../layouts/EntryLayout.astro';
+import { loadLibrary, type AnyEntry } from '../../lib/entries';
+
+export async function getStaticPaths() {
+  const { all } = await loadLibrary();
+  return all.map((entry) => ({
+    params: { collection: entry.collection, slug: entry.id },
+    props: { entry },
+  }));
+}
+
+interface Props {
+  entry: AnyEntry;
+}
+
+const { entry } = Astro.props;
+const library = await loadLibrary();
+const { Content, headings } = await render(entry);
+---
+
+<EntryLayout entry={entry} headings={headings} library={library}>
+  <Content />
+</EntryLayout>

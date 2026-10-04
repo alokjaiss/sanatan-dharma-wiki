@@ -1,0 +1,327 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import Connections from '../components/Connections.astro';
+import EntryLink from '../components/EntryLink.astro';
+import Infobox from '../components/Infobox.astro';
+import ReadOnline from '../components/ReadOnline.astro';
+import References from '../components/References.astro';
+import TableOfContents from '../components/TableOfContents.astro';
+import VerificationBadge from '../components/VerificationBadge.astro';
+import { site } from '../config/site';
+import { t } from '../i18n';
+import type { AnyEntry, Library } from '../lib/entries';
+import { absoluteUrl, collectionLabel, editUrl, formatDate, label, reportUrl } from '../lib/format';
+import { ancestors, siblings, titleOf } from '../lib/graph';
+import { collectionPath, entryPath } from '../lib/paths';
+import { ROMAN_LANG, SCRIPT_LANG } from '../lib/schema-meta';
+import { entryJsonLd, type Crumb } from '../lib/seo';
+import { searchVariants } from '../lib/text';
+
+interface Props {
+  entry: AnyEntry;
+  headings: { depth: number; slug: string; text: string }[];
+  library: Library;
+}
+
+const { entry, headings, library } = Astro.props;
+const { graph } = library;
+const data = entry.data;
+const path = entryPath(entry.collection, entry.id);
+
+const crumbs: Crumb[] = [
+  { label: collectionLabel(entry.collection), href: collectionPath(entry.collection) },
+  ...ancestors(graph, entry.id).map((slug) => ({
+    label: titleOf(graph, slug),
+    href: entryPath(graph.entries.get(slug)!.collection, slug),
+  })),
+  { label: data.title, href: path },
+];
+
+const kicker = (() => {
+  switch (entry.collection) {
+    case 'texts':
+      return `${label('canon', entry.data.canon)} · ${label('genre', entry.data.genre)}`;
+    case 'people':
+      return entry.data.roles.map((role) => label('personRole', role)).join(' · ');
+    case 'traditions':
+      return label('traditionKind', entry.data.kind);
+    case 'concepts':
+      return entry.data.domain ? `${collectionLabel('concepts', 'one')} · ${label('domain', entry.data.domain)}` : collectionLabel('concepts', 'one');
+    case 'places':
+      return `${label('placeKind', entry.data.kind)} · ${entry.data.location.region}`;
+    default:
+      return collectionLabel(entry.collection, 'one');
+  }
+})();
+
+const variants = searchVariants({
+  title: data.title,
+  roman: data.roman,
+  native: data.native,
+  aliases: data.aliases,
+});
+const neighbours = entry.collection === 'texts' ? siblings(graph, entry.id) : {};
+const parentTitle =
+  entry.collection === 'texts' && neighbours && (neighbours.previous || neighbours.next)
+    ? titleOf(graph, ancestors(graph, entry.id).at(-1) ?? '')
+    : undefined;
+const nativeLang = SCRIPT_LANG[data.nativeScript];
+---
+
+<BaseLayout
+  title={data.title}
+  description={data.summary}
+  ogType="article"
+  noindex={data.status === 'stub'}
+  jsonLd={entryJsonLd(entry, [{ label: site.name, href: '/' }, ...crumbs])}
+>
+  <article
+    class="entry container"
+    data-pagefind-body
+    data-pagefind-filter={`type:${collectionLabel(entry.collection, 'one')}`}
+  >
+    <header class="entry-header">
+      {
+        data.native && (
+          <p class="watermark" lang={nativeLang} aria-hidden="true" data-pagefind-ignore="all">
+            {data.native}
+          </p>
+        )
+      }
+      <Breadcrumbs items={crumbs} />
+      <p class="label kicker rise">{kicker}</p>
+      <h1 class="page-title rise">{data.title}</h1>
+      {
+        (data.roman || data.native) && (
+          <p class="names rise rise-2">
+            {data.roman && data.roman !== data.title && <i lang={ROMAN_LANG[data.nativeScript]}>{data.roman}</i>}
+            {data.native && <span lang={nativeLang}>{data.native}</span>}
+          </p>
+        )
+      }
+      <p class="lede rise rise-2">{data.summary}</p>
+      <div class="meta rise rise-3" data-pagefind-ignore>
+        <VerificationBadge level={data.verification} reviewedBy={data.reviewedBy} />
+        <span class="updated">{t('entry.updated', { date: formatDate(data.updated) })}</span>
+      </div>
+      <p class="sr-only" aria-hidden="true" data-pagefind-weight="6">{variants.join(' · ')}</p>
+    </header>
+
+    {data.status === 'stub' && <p class="stub-notice">{t('entry.stubNotice')}</p>}
+
+    <div class="entry-grid">
+      <div class="area-info">
+        <Infobox entry={entry} library={library} />
+      </div>
+
+      <div class="area-toc">
+        <TableOfContents headings={headings} />
+      </div>
+
+      <div class="area-body">
+        <div class="prose">
+          <slot />
+        </div>
+
+        {
+          (neighbours.previous || neighbours.next) && (
+            <nav class="siblings" aria-label={t('entry.inParent', { parent: parentTitle ?? '' })} data-pagefind-ignore>
+              {neighbours.previous && (
+                <p class="previous">
+                  <span class="label">{t('entry.previous')}</span>
+                  <EntryLink slug={neighbours.previous} library={library} />
+                </p>
+              )}
+              {neighbours.next && (
+                <p class="next">
+                  <span class="label">{t('entry.next')}</span>
+                  <EntryLink slug={neighbours.next} library={library} />
+                </p>
+              )}
+            </nav>
+          )
+        }
+
+        <References references={data.references} />
+        {entry.collection === 'texts' && <ReadOnline links={entry.data.readOnline} />}
+
+        <footer class="entry-actions" data-pagefind-ignore>
+          <a href={editUrl(entry.collection, entry.id)} rel="nofollow">{t('entry.edit')}</a>
+          <a href={reportUrl(data.title, absoluteUrl(path))} rel="nofollow">{t('entry.report')}</a>
+          <span>{t('entry.updated', { date: formatDate(data.updated) })}</span>
+          <span>
+            {t('entry.licence')}: <a href={site.license.url} rel="license">{site.license.name}</a>
+          </span>
+        </footer>
+      </div>
+
+      <div class="area-links">
+        <Connections entry={entry} library={library} />
+      </div>
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .entry-header {
+    position: relative;
+    padding-block: 2rem 2.25rem;
+    margin-bottom: 2.25rem;
+    border-bottom: 1px solid var(--rule);
+    overflow: hidden;
+  }
+
+  /* The entry's own name in its native script, faint behind the title. */
+  .watermark {
+    position: absolute;
+    right: -0.04em;
+    top: 50%;
+    transform: translateY(-46%);
+    margin: 0;
+    font-size: clamp(4.5rem, 3rem + 9vw, 11rem);
+    line-height: 1;
+    white-space: nowrap;
+    color: var(--ink);
+    opacity: 0.05;
+    pointer-events: none;
+    user-select: none;
+  }
+
+  .kicker {
+    margin: 1.6rem 0 0.6rem;
+    color: var(--accent);
+  }
+
+  .names {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.2rem 0.9rem;
+    margin: 0.65rem 0 0;
+    font-size: 1.25rem;
+    color: var(--ink-soft);
+  }
+
+  .names i + span::before {
+    content: '·';
+    margin-right: 0.9rem;
+    color: var(--rule-strong);
+  }
+
+  .lede {
+    max-width: 44rem;
+    margin: 1.1rem 0 0;
+    font-size: 1.18rem;
+    line-height: 1.6;
+    color: var(--ink-soft);
+  }
+
+  .meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.6rem 1rem;
+    margin-top: 1.3rem;
+  }
+
+  .updated {
+    font-family: var(--font-ui);
+    font-size: 0.8rem;
+    color: var(--ink-faint);
+  }
+
+  .stub-notice {
+    margin: 0 0 2rem;
+    padding: 0.9rem 1.1rem;
+    border: 1px dashed var(--rule-strong);
+    border-radius: 0.5rem;
+    font-family: var(--font-ui);
+    font-size: 0.88rem;
+    color: var(--ink-soft);
+  }
+
+  .entry-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: 'info' 'toc' 'body' 'links';
+    gap: 2rem;
+  }
+
+  .area-info {
+    grid-area: info;
+  }
+
+  .area-toc {
+    grid-area: toc;
+  }
+
+  .area-body {
+    grid-area: body;
+    min-width: 0;
+  }
+
+  .area-links {
+    grid-area: links;
+  }
+
+  @media (min-width: 1024px) {
+    .entry-grid {
+      grid-template-columns: minmax(0, 1fr) 19.5rem;
+      grid-template-rows: auto auto 1fr;
+      grid-template-areas:
+        'toc info'
+        'body info'
+        'body links';
+      column-gap: 3.5rem;
+    }
+  }
+
+  @media (min-width: 1280px) {
+    .entry-grid {
+      grid-template-columns: 12rem minmax(0, 1fr) 19.5rem;
+      grid-template-rows: auto 1fr;
+      grid-template-areas:
+        'toc body info'
+        'toc body links';
+    }
+
+    .area-toc {
+      position: sticky;
+      top: 1.5rem;
+      align-self: start;
+    }
+  }
+
+  .siblings {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: 3rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--rule);
+  }
+
+  .siblings p {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .siblings .next {
+    margin-left: auto;
+    text-align: right;
+  }
+
+  .entry-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.4rem;
+    margin-top: 3rem;
+    padding-top: 1.1rem;
+    border-top: 4px double var(--rule-strong);
+    font-family: var(--font-ui);
+    font-size: 0.82rem;
+    color: var(--ink-faint);
+  }
+</style>

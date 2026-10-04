@@ -1,0 +1,99 @@
+---
+import VerificationBadge from '../components/VerificationBadge.astro';
+import ProseLayout from '../layouts/ProseLayout.astro';
+import { site } from '../config/site';
+---
+
+<ProseLayout
+  title="How this encyclopedia is written"
+  kicker="Method"
+  lede="Entries are drafted with AI assistance from cited sources, and people review them before they go live. Here is exactly how that works, and how far you can trust a given page."
+>
+  <h2>From draft to page</h2>
+  <ol>
+    <li>
+      An AI agent picks the next subject from a public backlog. It researches the subject in sources we allow, and
+      it opens every source it cites.
+    </li>
+    <li>
+      It writes the entry to our <a href="/editorial-policy/">editorial policy</a>: a fixed article structure,
+      traditional and academic views labelled separately, and a citation for every date, attribution, number and
+      quotation.
+    </li>
+    <li>
+      Automated checks run on every change. They catch broken links, missing citations, missing sections and
+      original-language passages that lack a source.
+    </li>
+    <li>
+      The change is proposed as a pull request. Nothing reaches the site until a person reviews it and merges it.
+      The full history of every page is public on <a href={site.repo.url}>GitHub</a>.
+    </li>
+  </ol>
+
+  <h2 id="verification">Verification levels</h2>
+  <p>Every entry shows one of three badges near its title:</p>
+  <dl class="levels">
+    <dt><VerificationBadge level="ai-draft" /></dt>
+    <dd>
+      Written by an AI agent from cited sources. A person approved the change, but has not yet checked every claim
+      against its source. Read these entries with care, and check the references for anything that matters to you.
+    </dd>
+    <dt><VerificationBadge level="human-reviewed" /></dt>
+    <dd>A person has checked the entry's claims against the cited sources.</dd>
+    <dt><VerificationBadge level="expert-verified" /></dt>
+    <dd>
+      A named scholar or traditional authority has reviewed the entry. Their name appears beside the badge.
+    </dd>
+  </dl>
+
+  <h2>Rules we hold to</h2>
+  <ul>
+    <li>
+      <strong>No quotation from memory.</strong> Every verse, mantra or quotation is copied from a retrieved edition
+      and cited with its edition and locator. Where that isn't possible, we paraphrase and give the reference.
+    </li>
+    <li><strong>No invented citations.</strong> We cite only sources that were actually consulted.</li>
+    <li>
+      <strong>Two views, clearly labelled.</strong> Traditional accounts and academic scholarship are both reported,
+      each with its source. Neither is declared the truth in our own voice.
+    </li>
+    <li>
+      <strong>Fairness between traditions.</strong> No tradition is presented as the real or highest form of
+      Sanātana Dharma. A learned practitioner and a careful scholar should both find an entry fair.
+    </li>
+    <li>
+      <strong>A gap is better than an error.</strong> When a claim can't be sourced, we leave it out and list it as
+      an open question.
+    </li>
+  </ul>
+
+  <h2>Found a mistake?</h2>
+  <p>
+    Every entry has a <em>Report an error</em> link at the bottom. It opens a correction form on GitHub. Scholars
+    and practitioners who would like to review entries in their area are warmly invited to
+    <a href="/contribute/">get in touch</a>.
+  </p>
+</ProseLayout>
+
+<style>
+  .levels {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    gap: 0.9rem 1.25rem;
+    margin: 0 0 1.5rem;
+  }
+
+  .levels dt {
+    padding-top: 0.15rem;
+  }
+
+  .levels dd {
+    margin: 0;
+  }
+
+  @media (max-width: 560px) {
+    .levels {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

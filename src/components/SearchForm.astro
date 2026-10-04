@@ -1,0 +1,111 @@
+---
+import { t } from '../i18n';
+
+interface Props {
+  variant?: 'compact' | 'hero';
+  /** Distinguishes ids when the form appears twice on a page. */
+  idSuffix?: string;
+  value?: string;
+}
+
+const { variant = 'compact', idSuffix = 'main', value } = Astro.props;
+const id = `q-${variant}-${idSuffix}`;
+---
+
+<form class:list={['search-form', variant]} action="/search/" method="get" role="search">
+  <label class="sr-only" for={id}>{t('search.label')}</label>
+  <input
+    id={id}
+    name="q"
+    type="search"
+    placeholder={t('search.placeholder')}
+    value={value}
+    autocomplete="off"
+    spellcheck="false"
+  />
+  <button type="submit">
+    <svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true" focusable="false">
+      <circle cx="8.5" cy="8.5" r="5.75" fill="none" stroke="currentColor" stroke-width="1.6"></circle>
+      <path d="m13 13 4.5 4.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></path>
+    </svg>
+    <span class:list={[{ 'sr-only': variant === 'compact' }]}>{t('search.button')}</span>
+  </button>
+</form>
+
+<style>
+  .search-form {
+    display: flex;
+    align-items: stretch;
+    width: 100%;
+    background: var(--paper-raised);
+    border: 1px solid var(--rule-strong);
+    border-radius: 999px;
+    transition:
+      border-color 120ms ease,
+      box-shadow 120ms ease;
+  }
+
+  .search-form:focus-within {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-wash);
+  }
+
+  input {
+    flex: 1;
+    min-width: 0;
+    border: 0;
+    background: transparent;
+    color: var(--ink);
+    font-family: var(--font-ui);
+    font-size: 0.92rem;
+    padding: 0.5rem 0 0.5rem 1rem;
+  }
+
+  input::placeholder {
+    color: var(--ink-faint);
+  }
+
+  input:focus {
+    outline: none;
+  }
+
+  button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    border: 0;
+    background: transparent;
+    color: var(--ink-soft);
+    padding: 0 0.95rem;
+    font-family: var(--font-ui);
+    font-weight: 600;
+    cursor: pointer;
+    border-radius: 999px;
+  }
+
+  button:hover {
+    color: var(--accent);
+  }
+
+  .hero {
+    box-shadow: var(--shadow-soft);
+  }
+
+  .hero input {
+    font-size: 1.1rem;
+    padding: 1rem 0 1rem 1.5rem;
+  }
+
+  .hero button {
+    margin: 0.35rem;
+    padding: 0 1.3rem;
+    background: var(--accent);
+    color: var(--paper);
+    font-size: 0.95rem;
+  }
+
+  .hero button:hover {
+    background: var(--accent-hover);
+    color: var(--paper);
+  }
+</style>

@@ -1,0 +1,113 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import { t } from '../i18n';
+import { collectionLabel, countLabel } from '../lib/format';
+import type { CollectionName } from '../lib/schema-meta';
+
+interface Props {
+  collection: CollectionName;
+  count: number;
+  /** Section anchors for the "Jump to" bar. */
+  sections?: { id: string; label: string }[];
+}
+
+const { collection, count, sections = [] } = Astro.props;
+const title = collectionLabel(collection);
+---
+
+<BaseLayout title={title} description={t(`collection.${collection}.blurb`)}>
+  <div class="container">
+    <header class="index-header">
+      <p class="label kicker rise">{countLabel(count)}</p>
+      <h1 class="page-title rise">{title}</h1>
+      <p class="blurb rise rise-2">{t(`collection.${collection}.blurb`)}</p>
+      {
+        sections.length > 1 && (
+          <nav class="jump rise rise-3" aria-label={t('index.jump')}>
+            <span class="label">{t('index.jump')}</span>
+            <ul>
+              {sections.map((section) => (
+                <li>
+                  <a href={`#${section.id}`}>{section.label}</a>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        )
+      }
+    </header>
+    {count === 0 ? <p class="empty">{t('collection.empty')}</p> : <slot />}
+  </div>
+</BaseLayout>
+
+<style>
+  .index-header {
+    padding-block: 2.5rem 2rem;
+    margin-bottom: 2rem;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .kicker {
+    color: var(--accent);
+    margin: 0 0 0.5rem;
+  }
+
+  .blurb {
+    max-width: 40rem;
+    margin: 0.9rem 0 0;
+    font-size: 1.15rem;
+    color: var(--ink-soft);
+  }
+
+  .jump {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.5rem 1rem;
+    margin-top: 1.5rem;
+  }
+
+  .jump ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 1rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    font-family: var(--font-ui);
+    font-size: 0.88rem;
+  }
+
+  .empty {
+    color: var(--ink-faint);
+  }
+
+  :global(.index-section) {
+    margin-bottom: 3rem;
+    scroll-margin-top: 1.5rem;
+  }
+
+  :global(.index-section > h2) {
+    font-family: var(--font-display);
+    font-weight: 560;
+    font-size: 1.6rem;
+    margin: 0 0 0.25rem;
+  }
+
+  :global(.index-section > .section-note) {
+    margin: 0 0 1.1rem;
+    font-family: var(--font-ui);
+    font-size: 0.84rem;
+    color: var(--ink-faint);
+  }
+
+  :global(.index-section h3.group-title) {
+    font-family: var(--font-ui);
+    font-size: 0.74rem;
+    font-weight: 650;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin: 1.5rem 0 0.75rem;
+  }
+</style>

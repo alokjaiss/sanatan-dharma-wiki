@@ -1,0 +1,383 @@
+---
+import EntryLink from './EntryLink.astro';
+import { t } from '../i18n';
+import type { AnyEntry, Library } from '../lib/entries';
+import { collectionLabel, label } from '../lib/format';
+import { guruChain, refId, titleOf } from '../lib/graph';
+import { COLLECTIONS } from '../lib/schema-meta';
+
+interface Props {
+  entry: AnyEntry;
+  library: Library;
+}
+
+const { entry, library } = Astro.props;
+const { graph } = library;
+const id = entry.id;
+const list = <T,>(map: Map<string, T[]>) => map.get(id) ?? [];
+
+const chain = entry.collection === 'people' ? guruChain(graph, id) : [];
+const works = list(graph.works);
+const discussed = list(graph.discussedIn);
+const discussedByCollection = COLLECTIONS.map((collection) => ({
+  collection,
+  slugs: discussed.filter((slug) => graph.entries.get(slug)?.collection === collection),
+})).filter((group) => group.slugs.length > 0);
+const interpretations = entry.collection === 'concepts' ? entry.data.interpretations : [];
+
+const hasAny =
+  chain.length > 1 ||
+  [
+    graph.contents,
+    graph.commentaries,
+    graph.disciples,
+    graph.works,
+    graph.founded,
+    graph.placesOfPerson,
+    graph.subTraditions,
+    graph.figures,
+    graph.centres,
+    graph.keyDoctrines,
+    graph.discussedIn,
+    graph.bornHere,
+    graph.textsOfDeity,
+    graph.traditionsOfDeity,
+  ].some((map) => (map.get(id)?.length ?? 0) > 0) ||
+  interpretations.length > 0;
+---
+
+{
+  hasAny && (
+    <section class="connections" aria-labelledby="connections-title" data-pagefind-ignore>
+      <h2 id="connections-title" class="label">
+        {t('entry.connections')}
+      </h2>
+
+      {chain.length > 1 && (
+        <div class="group">
+          <h3>{t('rel.lineage')}</h3>
+          <ol class="chain">
+            {chain.map((slug) => (
+              <li class:list={{ self: slug === id }}>
+                {slug === id ? <span>{titleOf(graph, slug)}</span> : <EntryLink slug={slug} library={library} />}
+              </li>
+            ))}
+          </ol>
+        </div>
+      )}
+
+      {list(graph.contents).length > 0 && (
+        <div class="group">
+          <h3>{t('rel.contents')}</h3>
+          <ol class="plain">
+            {list(graph.contents).map((slug) => (
+              <li>
+                <EntryLink slug={slug} library={library} />
+              </li>
+            ))}
+          </ol>
+        </div>
+      )}
+
+      {list(graph.commentaries).length > 0 && (
+        <div class="group">
+          <h3>{t('rel.commentaries')}</h3>
+          <ul class="plain">
+            {list(graph.commentaries).map((slug) => {
+              const commentators = (graph.entries.get(slug)?.data.authorship as { person: unknown }[] | undefined) ?? [];
+              return (
+                <li>
+                  <EntryLink slug={slug} library={library} />
+                  {commentators.length > 0 && (
+                    <span class="meta">
+                      {commentators.map((credit) => titleOf(graph, refId(credit.person) ?? '')).join(', ')}
+                    </span>
+                  )}
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      )}
+
+      {works.length > 0 && (
+        <div class="group">
+          <h3>{t('rel.works')}</h3>
+          <ul class="plain">
+            {works.map((work) => (
+              <li>
+                <EntryLink slug={work.text} library={library} />
+                <span class="meta">
+                  {label('role', work.role)} · {label('basis', work.basis)}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {list(graph.disciples).length > 0 && (
+        <div class="group">
+          <h3>{t('rel.disciples')}</h3>
+          <ul class="plain">
+            {list(graph.disciples).map((disciple) => (
+              <li>
+                <EntryLink slug={disciple.person} library={library} />
+                <span class="meta">{label('guru', disciple.kind)}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {list(graph.founded).length > 0 && (
+        <div class="group">
+          <h3>{t('rel.founded')}</h3>
+          <ul class="plain">
+            {list(graph.founded).map((slug) => (
+              <li>
+                <EntryLink slug={slug} library={library} />
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {list(graph.placesOfPerson).length > 0 && (
+        <div class="group">
+          <h3>{t('rel.places')}</h3>
+          <ul class="plain">
+            {list(graph.placesOfPerson).map((slug) => (
+              <li>
+                <EntryLink slug={slug} library={library} />
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {list(graph.subTraditions).length > 0 && (
+        <div class="group">
+          <h3>{t('rel.subTraditions')}</h3>
+          <ul class="plain">
+            {list(graph.subTraditions).map((slug) => (
+              <li>
+                <EntryLink slug={slug} library={library} />
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {list(graph.figures).length > 0 && (
+        <div class="group">
+          <h3>{t('rel.figures')}</h3>
+          <ul class="plain">
+            {list(graph.figures).map((slug) => (
+              <li>
+                <EntryLink slug={slug} library={library} />
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {list(graph.centres).length > 0 && (
+        <div class="group">
+          <h3>{t('rel.centres')}</h3>
+          <ul class="plain">
+            {list(graph.centres).map((slug) => (
+              <li>
+                <EntryLink slug={slug} library={library} />
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {list(graph.keyDoctrines).length > 0 && (
+        <div class="group">
+          <h3>{t('rel.keyDoctrines')}</h3>
+          <dl class="readings">
+            {list(graph.keyDoctrines).map((doctrine) => (
+              <div>
+                <dt>
+                  <EntryLink slug={doctrine.concept} library={library} />
+                </dt>
+                <dd>{doctrine.summary}</dd>
+              </div>
+            ))}
+          </dl>
+        </div>
+      )}
+
+      {interpretations.length > 0 && (
+        <div class="group">
+          <h3>{t('rel.interpretations')}</h3>
+          <dl class="readings">
+            {interpretations.map((reading) => (
+              <div>
+                <dt>
+                  <EntryLink slug={refId(reading.tradition)!} library={library} />
+                </dt>
+                <dd>{reading.summary}</dd>
+              </div>
+            ))}
+          </dl>
+        </div>
+      )}
+
+      {discussedByCollection.length > 0 && (
+        <div class="group">
+          <h3>{t('rel.discussedIn')}</h3>
+          {discussedByCollection.map((group) => (
+            <div class="subgroup">
+              <span class="meta">{collectionLabel(group.collection)}</span>
+              <ul class="plain">
+                {group.slugs.map((slug) => (
+                  <li>
+                    <EntryLink slug={slug} library={library} />
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {list(graph.bornHere).length > 0 && (
+        <div class="group">
+          <h3>{t('rel.bornHere')}</h3>
+          <ul class="plain">
+            {list(graph.bornHere).map((slug) => (
+              <li>
+                <EntryLink slug={slug} library={library} />
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {list(graph.textsOfDeity).length > 0 && (
+        <div class="group">
+          <h3>{t('rel.texts')}</h3>
+          <ul class="plain">
+            {list(graph.textsOfDeity).map((slug) => (
+              <li>
+                <EntryLink slug={slug} library={library} />
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {list(graph.traditionsOfDeity).length > 0 && (
+        <div class="group">
+          <h3>{t('rel.traditions')}</h3>
+          <ul class="plain">
+            {list(graph.traditionsOfDeity).map((slug) => (
+              <li>
+                <EntryLink slug={slug} library={library} />
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+    </section>
+  )
+}
+
+<style>
+  .connections {
+    font-size: 0.92rem;
+  }
+
+  .connections > h2 {
+    margin: 0 0 0.25rem;
+  }
+
+  .group {
+    padding: 0.85rem 0;
+    border-top: 1px solid var(--rule);
+  }
+
+  h3 {
+    font-family: var(--font-display);
+    font-size: 1.02rem;
+    font-weight: 600;
+    margin: 0 0 0.45rem;
+  }
+
+  .plain {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .plain li + li {
+    margin-top: 0.35rem;
+  }
+
+  .meta {
+    display: block;
+    font-family: var(--font-ui);
+    font-size: 0.74rem;
+    color: var(--ink-faint);
+  }
+
+  .subgroup + .subgroup {
+    margin-top: 0.6rem;
+  }
+
+  /* Guru paramparā: a vertical thread of teachers. */
+  .chain {
+    list-style: none;
+    margin: 0;
+    padding: 0 0 0 1rem;
+    border-left: 2px solid var(--rule-strong);
+  }
+
+  .chain li {
+    position: relative;
+    padding: 0.15rem 0 0.35rem;
+  }
+
+  .chain li::before {
+    content: '';
+    position: absolute;
+    left: calc(-1rem - 5px);
+    top: 0.7rem;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--paper);
+    border: 2px solid var(--rule-strong);
+  }
+
+  .chain li.self::before {
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+
+  .chain li.self span {
+    font-weight: 650;
+  }
+
+  .readings {
+    margin: 0;
+  }
+
+  .readings > div + div {
+    margin-top: 0.7rem;
+  }
+
+  .readings dt {
+    font-weight: 600;
+  }
+
+  .readings dd {
+    margin: 0.15rem 0 0;
+    color: var(--ink-soft);
+    font-size: 0.88rem;
+  }
+</style>

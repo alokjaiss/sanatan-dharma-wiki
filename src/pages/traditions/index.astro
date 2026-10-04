@@ -1,0 +1,59 @@
+---
+import EntryCard from '../../components/EntryCard.astro';
+import CollectionLayout from '../../layouts/CollectionLayout.astro';
+import { entriesOf, loadLibrary } from '../../lib/entries';
+import { refId } from '../../lib/graph';
+
+const library = await loadLibrary();
+const traditions = entriesOf(library, 'traditions');
+const known = new Set(traditions.map((entry) => entry.id));
+// Roots: traditions without a (visible) parent. Branches are drawn under their parent.
+const roots = traditions.filter((entry) => {
+  const parent = refId(entry.data.parent);
+  return !parent || !known.has(parent);
+});
+const branchesOf = (slug: string) => traditions.filter((entry) => refId(entry.data.parent) === slug);
+---
+
+<CollectionLayout
+  collection="traditions"
+  count={traditions.length}
+  sections={roots.map((root) => ({ id: root.id, label: root.data.title }))}
+>
+  {
+    roots.map((root) => (
+      <section class="index-section tree" id={root.id}>
+        <EntryCard entry={root} level="h2" />
+        {branchesOf(root.id).length > 0 && (
+          <ul class="branches">
+            {branchesOf(root.id).map((branch) => (
+              <li>
+                <EntryCard entry={branch} level="h3" />
+                {branchesOf(branch.id).length > 0 && (
+                  <ul class="branches">
+                    {branchesOf(branch.id).map((leaf) => (
+                      <li>
+                        <EntryCard entry={leaf} level="h4" />
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
+    ))
+  }
+</CollectionLayout>
+
+<style>
+  .branches {
+    list-style: none;
+    margin: 0.9rem 0 0 1.4rem;
+    padding: 0 0 0 1.4rem;
+    border-left: 2px solid var(--rule-strong);
+    display: grid;
+    gap: 0.9rem;
+  }
+</style>

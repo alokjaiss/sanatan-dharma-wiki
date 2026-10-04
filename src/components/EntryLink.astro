@@ -1,0 +1,34 @@
+---
+import type { Library } from '../lib/entries';
+import { entryPath } from '../lib/paths';
+
+interface Props {
+  slug: string;
+  library: Library;
+  label?: string;
+}
+
+const { slug, library, label } = Astro.props;
+const target = library.bySlug.get(slug);
+const isStub = target?.data.status === 'stub';
+---
+
+{
+  target ? (
+    <a class:list={['entry-link', { stub: isStub }]} href={entryPath(target.collection, target.id)}>
+      {label ?? target.data.title}
+    </a>
+  ) : (
+    <span class="entry-missing">{label ?? slug}</span>
+  )
+}
+
+<style>
+  .stub {
+    text-decoration-style: dotted;
+  }
+
+  .entry-missing {
+    color: var(--ink-faint);
+  }
+</style>

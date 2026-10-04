@@ -1,0 +1,25 @@
+---
+import EntryCard from './EntryCard.astro';
+import type { AnyEntry } from '../lib/entries';
+
+interface Props {
+  groups: { letter: string; entries: AnyEntry[] }[];
+}
+
+const { groups } = Astro.props;
+---
+
+{
+  groups.map((group) => (
+    <section class="index-section" id={`letter-${group.letter}`} aria-labelledby={`heading-${group.letter}`}>
+      <h2 id={`heading-${group.letter}`}>{group.letter}</h2>
+      <ul class="card-grid">
+        {group.entries.map((entry) => (
+          <li>
+            <EntryCard entry={entry} />
+          </li>
+        ))}
+      </ul>
+    </section>
+  ))
+}

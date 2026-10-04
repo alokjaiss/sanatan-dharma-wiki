@@ -13,6 +13,27 @@ export interface Library {
   graph: Graph;
 }
 
+export function byTitle(a: AnyEntry, b: AnyEntry): number {
+  return a.data.title.localeCompare(b.data.title, 'en');
+}
+
+/** Visible entries of one collection, sorted by title. */
+export function entriesOf<C extends CollectionName>(library: Library, collection: C): CollectionEntry<C>[] {
+  return library.all.filter((entry) => entry.collection === collection).sort(byTitle) as CollectionEntry<C>[];
+}
+
+/** A–Z groups by the first letter of the title (diacritics ignored). */
+export function groupByInitial<E extends AnyEntry>(entries: E[]): { letter: string; entries: E[] }[] {
+  const groups = new Map<string, E[]>();
+  for (const entry of entries) {
+    const letter = entry.data.title.normalize('NFD').charAt(0).toUpperCase();
+    groups.set(letter, [...(groups.get(letter) ?? []), entry]);
+  }
+  return [...groups.entries()]
+    .sort(([a], [b]) => a.localeCompare(b, 'en'))
+    .map(([letter, list]) => ({ letter, entries: list }));
+}
+
 let cached: Promise<Library> | undefined;
 
 /** Drafts are visible in `astro dev` and excluded from production builds. */

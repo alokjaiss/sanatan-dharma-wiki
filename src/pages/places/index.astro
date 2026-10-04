@@ -1,0 +1,34 @@
+---
+import EntryCard from '../../components/EntryCard.astro';
+import CollectionLayout from '../../layouts/CollectionLayout.astro';
+import { entriesOf, loadLibrary } from '../../lib/entries';
+import { label } from '../../lib/format';
+import { PLACE_KINDS } from '../../lib/schema-meta';
+
+const places = entriesOf(await loadLibrary(), 'places');
+const sections = PLACE_KINDS.map((kind) => ({
+  kind,
+  entries: places.filter((entry) => entry.data.kind === kind),
+})).filter((section) => section.entries.length > 0);
+---
+
+<CollectionLayout
+  collection="places"
+  count={places.length}
+  sections={sections.map((section) => ({ id: section.kind, label: label('placeKind', section.kind) }))}
+>
+  {
+    sections.map((section) => (
+      <section class="index-section" id={section.kind} aria-labelledby={`heading-${section.kind}`}>
+        <h2 id={`heading-${section.kind}`}>{label('placeKind', section.kind)}</h2>
+        <ul class="card-grid">
+          {section.entries.map((entry) => (
+            <li>
+              <EntryCard entry={entry} />
+            </li>
+          ))}
+        </ul>
+      </section>
+    ))
+  }
+</CollectionLayout>

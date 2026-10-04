@@ -31,6 +31,20 @@ export const SCRIPT_LANG: Record<ScriptCode, string> = {
   latn: 'en',
 };
 
+/** BCP 47 tags for the romanised (`roman`) name, by the entry's native script. */
+export const ROMAN_LANG: Record<ScriptCode, string> = {
+  deva: 'sa-Latn',
+  taml: 'ta-Latn',
+  telu: 'te-Latn',
+  knda: 'kn-Latn',
+  mlym: 'ml-Latn',
+  beng: 'bn-Latn',
+  gujr: 'gu-Latn',
+  guru: 'pa-Latn',
+  orya: 'or-Latn',
+  latn: 'en',
+};
+
 export const STATUSES = ['stub', 'draft', 'published'] as const;
 export const VERIFICATION_LEVELS = ['ai-draft', 'human-reviewed', 'expert-verified'] as const;
 export const REFERENCE_KINDS = ['primary', 'secondary', 'tertiary', 'traditional'] as const;

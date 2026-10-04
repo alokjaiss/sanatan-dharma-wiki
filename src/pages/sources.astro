@@ -1,0 +1,20 @@
+---
+import { Content } from '../../docs/SOURCES.md';
+import ProseLayout from '../layouts/ProseLayout.astro';
+---
+
+<ProseLayout
+  title="Sources"
+  kicker="Conventions"
+  lede="Where entries draw their facts and quotations from, and on what terms."
+>
+  <div class="document">
+    <Content />
+  </div>
+</ProseLayout>
+
+<style>
+  .document :global(h1) {
+    display: none;
+  }
+</style>

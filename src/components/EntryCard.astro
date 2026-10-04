@@ -1,0 +1,112 @@
+---
+import { t } from '../i18n';
+import type { AnyEntry } from '../lib/entries';
+import { collectionLabel } from '../lib/format';
+import { entryPath } from '../lib/paths';
+import { ROMAN_LANG, SCRIPT_LANG } from '../lib/schema-meta';
+
+interface Props {
+  entry: AnyEntry;
+  showCollection?: boolean;
+  /** Heading level for the title, so cards fit the page outline. */
+  level?: 'h2' | 'h3' | 'h4';
+}
+
+const { entry, showCollection = false, level = 'h3' } = Astro.props;
+const { title, roman, native, nativeScript, summary, status } = entry.data;
+const Heading = level;
+---
+
+<article class:list={['card', { stub: status === 'stub' }]}>
+  {showCollection && <p class="label kind">{collectionLabel(entry.collection, 'one')}</p>}
+  <Heading class="title" data-stub-label={t('entry.stubTag')}>
+    <a href={entryPath(entry.collection, entry.id)}>{title}</a>
+  </Heading>
+  {
+    (roman || native) && (
+      <p class="names">
+        {roman && roman !== title && <i lang={ROMAN_LANG[nativeScript]}>{roman}</i>}
+        {native && <span lang={SCRIPT_LANG[nativeScript]}>{native}</span>}
+      </p>
+    )
+  }
+  <p class="summary">{summary}</p>
+</article>
+
+<style>
+  .card {
+    position: relative;
+    padding: 1.1rem 1.2rem 1.15rem;
+    background: var(--paper-raised);
+    border: 1px solid var(--rule);
+    border-radius: 0.65rem;
+    transition:
+      border-color 140ms ease,
+      transform 140ms ease,
+      box-shadow 140ms ease;
+  }
+
+  .card:hover {
+    border-color: var(--rule-strong);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-soft);
+  }
+
+  .kind {
+    margin: 0 0 0.35rem;
+    color: var(--accent);
+  }
+
+  .title {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 1.2rem;
+    line-height: 1.25;
+    margin: 0;
+  }
+
+  .title a {
+    color: var(--ink);
+    text-decoration: none;
+  }
+
+  /* The whole card is the link target. */
+  .title a::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+  }
+
+  .card:hover .title a {
+    color: var(--accent);
+  }
+
+  .names {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 0.65rem;
+    margin: 0.2rem 0 0;
+    font-size: 0.9rem;
+    color: var(--ink-faint);
+  }
+
+  .summary {
+    margin: 0.55rem 0 0;
+    font-size: 0.92rem;
+    line-height: 1.55;
+    color: var(--ink-soft);
+  }
+
+  .stub .title::after {
+    content: attr(data-stub-label);
+    margin-left: 0.5rem;
+    font-family: var(--font-ui);
+    font-size: 0.62rem;
+    font-weight: 650;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    vertical-align: 0.25em;
+    color: var(--ink-faint);
+  }
+</style>

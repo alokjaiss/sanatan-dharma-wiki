@@ -1,0 +1,16 @@
+---
+import AlphabeticalIndex from '../../components/AlphabeticalIndex.astro';
+import CollectionLayout from '../../layouts/CollectionLayout.astro';
+import { entriesOf, groupByInitial, loadLibrary } from '../../lib/entries';
+
+const people = entriesOf(await loadLibrary(), 'people');
+const groups = groupByInitial(people);
+---
+
+<CollectionLayout
+  collection="people"
+  count={people.length}
+  sections={groups.map((group) => ({ id: `letter-${group.letter}`, label: group.letter }))}
+>
+  <AlphabeticalIndex groups={groups} />
+</CollectionLayout>

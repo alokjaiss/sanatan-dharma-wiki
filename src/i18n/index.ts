@@ -7,6 +7,11 @@ export type { MessageKey };
 
 export const defaultLocale: Locale = 'en';
 
+/** True when a message exists, for keys built at runtime (enum labels). */
+export function hasMessage(key: string, locale: Locale = defaultLocale): key is MessageKey {
+  return key in messages[locale];
+}
+
 /**
  * Look up a UI string. `{name}` placeholders are replaced from `vars`.
  * Every user-facing string in components goes through here so a Hindi edition (Phase 6)

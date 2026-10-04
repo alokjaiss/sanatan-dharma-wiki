@@ -1,0 +1,88 @@
+---
+import { t } from '../i18n';
+
+interface DateView {
+  label: string;
+  source: string;
+}
+
+interface Props {
+  dating?: { traditional: DateView[]; academic: DateView[]; note?: string };
+}
+
+const { dating } = Astro.props;
+const views = dating
+  ? ([
+      ['traditional', dating.traditional],
+      ['academic', dating.academic],
+    ] as const).filter(([, list]) => list.length > 0)
+  : [];
+---
+
+{
+  views.length > 0 && (
+    <div class="dual-date">
+      {views.map(([view, list]) => (
+        <div class:list={['view', view]}>
+          <span class="which">{t(`info.${view}`)}</span>
+          {list.map((date) => (
+            <p>
+              <span class="when">{date.label}</span>
+              <span class="source">{date.source}</span>
+            </p>
+          ))}
+        </div>
+      ))}
+      {dating?.note && <p class="note">{dating.note}</p>}
+    </div>
+  )
+}
+
+<style>
+  .dual-date {
+    display: grid;
+    gap: 0.6rem;
+  }
+
+  .view {
+    padding-left: 0.65rem;
+    border-left: 2px solid var(--rule-strong);
+  }
+
+  .view.traditional {
+    border-left-color: var(--saffron);
+  }
+
+  .view.academic {
+    border-left-color: var(--ink-faint);
+  }
+
+  .which {
+    display: block;
+    font-family: var(--font-ui);
+    font-size: 0.68rem;
+    font-weight: 650;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+
+  p {
+    margin: 0.1rem 0 0.3rem;
+  }
+
+  .when {
+    display: block;
+  }
+
+  .source {
+    display: block;
+    font-size: 0.8rem;
+    color: var(--ink-faint);
+  }
+
+  .note {
+    font-size: 0.82rem;
+    color: var(--ink-soft);
+  }
+</style>

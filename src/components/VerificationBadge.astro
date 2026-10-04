@@ -1,0 +1,78 @@
+---
+import { t } from '../i18n';
+
+interface Props {
+  level: 'ai-draft' | 'human-reviewed' | 'expert-verified';
+  reviewedBy?: string;
+}
+
+const { level, reviewedBy } = Astro.props;
+---
+
+<span class="verification">
+  <a class:list={['badge', level]} href="/how-this-is-written/#verification" title={t(`verification.${level}.hint`)}>
+    <span class="dot" aria-hidden="true"></span>
+    {t(`verification.${level}`)}
+  </a>
+  {reviewedBy && <span class="reviewer">{t('verification.by', { name: reviewedBy })}</span>}
+</span>
+
+<style>
+  .verification {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+  }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.22rem 0.7rem 0.22rem 0.6rem;
+    border-radius: 999px;
+    font-family: var(--font-ui);
+    font-size: 0.76rem;
+    font-weight: 650;
+    letter-spacing: 0.02em;
+    text-decoration: none;
+  }
+
+  .dot {
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    background: currentColor;
+  }
+
+  .ai-draft {
+    background: var(--draft-bg);
+    color: var(--draft-ink);
+  }
+
+  .ai-draft .dot {
+    background: transparent;
+    border: 1.5px solid currentColor;
+  }
+
+  .human-reviewed {
+    background: var(--human-bg);
+    color: var(--human-ink);
+  }
+
+  .expert-verified {
+    background: var(--expert-bg);
+    color: var(--expert-ink);
+  }
+
+  .badge:hover {
+    filter: brightness(0.97);
+    text-decoration: underline;
+  }
+
+  .reviewer {
+    font-family: var(--font-ui);
+    font-size: 0.78rem;
+    color: var(--ink-faint);
+  }
+</style>

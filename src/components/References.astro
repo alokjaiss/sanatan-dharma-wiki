@@ -1,0 +1,95 @@
+---
+import { t } from '../i18n';
+import { label, referenceLead, type ReferenceData } from '../lib/format';
+
+interface Props {
+  references: ReferenceData[];
+}
+
+const { references } = Astro.props;
+---
+
+{
+  references.length > 0 && (
+    <section class="references" aria-labelledby="references-title">
+      <h2 id="references-title">{t('entry.references')}</h2>
+      <ol>
+        {references.map((ref) => (
+          <li>
+            <span class="kind">{label('referenceKind', ref.kind)}</span>
+            <span class="citation">
+              {referenceLead(ref) && <span>{referenceLead(ref)}. </span>}
+              {ref.url ? (
+                <a href={ref.url} rel="noopener">
+                  <cite>{ref.title}</cite>
+                </a>
+              ) : (
+                <cite>{ref.title}</cite>
+              )}
+              {ref.publisher && <span>. {ref.publisher}</span>}
+              {ref.locator && <span>, {ref.locator}</span>}
+              <span>.</span>
+              {ref.note && <span class="note"> {ref.note}</span>}
+            </span>
+          </li>
+        ))}
+      </ol>
+    </section>
+  )
+}
+
+<style>
+  .references {
+    margin-top: 3rem;
+  }
+
+  h2 {
+    font-family: var(--font-display);
+    font-size: 1.35rem;
+    font-weight: 560;
+    margin: 0 0 0.9rem;
+  }
+
+  ol {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    counter-reset: ref;
+    font-size: 0.9rem;
+  }
+
+  li {
+    counter-increment: ref;
+    display: grid;
+    grid-template-columns: 2rem 1fr;
+    column-gap: 0.25rem;
+    padding: 0.55rem 0;
+    border-top: 1px solid var(--rule);
+  }
+
+  li::before {
+    content: counter(ref);
+    grid-row: span 2;
+    font-family: var(--font-ui);
+    font-size: 0.8rem;
+    color: var(--ink-faint);
+    padding-top: 0.15rem;
+  }
+
+  .kind {
+    font-family: var(--font-ui);
+    font-size: 0.66rem;
+    font-weight: 650;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+
+  cite {
+    font-style: italic;
+  }
+
+  .note {
+    color: var(--ink-soft);
+  }
+</style>

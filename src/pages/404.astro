@@ -1,0 +1,38 @@
+---
+import SearchForm from '../components/SearchForm.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { t } from '../i18n';
+---
+
+<BaseLayout title={t('page.notFound')} noindex>
+  <section class="container not-found">
+    <p class="label numeral" aria-hidden="true">404</p>
+    <h1 class="page-title">{t('page.notFound')}</h1>
+    <p class="body">{t('page.notFoundBody')}</p>
+    <div class="search">
+      <SearchForm variant="hero" idSuffix="404" />
+    </div>
+    <p><a href="/">{t('page.backHome')}</a></p>
+  </section>
+</BaseLayout>
+
+<style>
+  .not-found {
+    padding-block: 4rem 2rem;
+    max-width: 44rem;
+  }
+
+  .numeral {
+    color: var(--accent);
+    margin: 0 0 0.75rem;
+  }
+
+  .body {
+    color: var(--ink-soft);
+    margin: 1rem 0 1.75rem;
+  }
+
+  .search {
+    margin-bottom: 1.5rem;
+  }
+</style>

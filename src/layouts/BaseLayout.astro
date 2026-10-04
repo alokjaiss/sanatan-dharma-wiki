@@ -1,0 +1,58 @@
+---
+import '../styles/global.css';
+import SiteFooter from '../components/SiteFooter.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import { site } from '../config/site';
+import { t } from '../i18n';
+
+interface Props {
+  /** Page title; the site name is appended. Omit on the home page. */
+  title?: string;
+  description?: string;
+  /** Keep this page out of search engines even after launch (e.g. stubs). */
+  noindex?: boolean;
+  ogType?: 'website' | 'article';
+  jsonLd?: Record<string, unknown>;
+}
+
+const { title, description = site.description, noindex = false, ogType = 'website', jsonLd } = Astro.props;
+
+const pageTitle = title ? `${title} · ${site.name}` : `${site.name} · ${site.tagline}`;
+const canonical = new URL(Astro.url.pathname, site.url).toString();
+const robots = !site.launched ? 'noindex, nofollow' : noindex ? 'noindex, follow' : 'index, follow';
+// Escape "<" so the JSON can never close the script element early.
+const structuredData = jsonLd ? JSON.stringify(jsonLd).replace(/</g, '\\' + 'u003c') : undefined;
+---
+
+<!doctype html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{pageTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <meta name="robots" content={robots} />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" content="#f7f1e6" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#16120e" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <meta property="og:site_name" content={site.name} />
+    <meta property="og:type" content={ogType} />
+    <meta property="og:title" content={title ?? site.name} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta name="twitter:card" content="summary" />
+    {structuredData && <script is:inline type="application/ld+json" set:html={structuredData} />}
+    <slot name="head" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">{t('site.skipToContent')}</a>
+    <SiteHeader />
+    <main id="main">
+      <slot />
+    </main>
+    <SiteFooter />
+  </body>
+</html>

@@ -1,0 +1,46 @@
+---
+import BaseLayout from './BaseLayout.astro';
+
+interface Props {
+  title: string;
+  kicker?: string;
+  lede?: string;
+  description?: string;
+}
+
+const { title, kicker, lede, description } = Astro.props;
+---
+
+<BaseLayout title={title} description={description ?? lede}>
+  <article class="container page" data-pagefind-body data-pagefind-filter="type:Page">
+    <header class="page-header">
+      {kicker && <p class="label kicker rise">{kicker}</p>}
+      <h1 class="page-title rise">{title}</h1>
+      {lede && <p class="lede rise rise-2">{lede}</p>}
+    </header>
+    <div class="prose">
+      <slot />
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .page-header {
+    padding-block: 2.5rem 2rem;
+    margin-bottom: 2.25rem;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .kicker {
+    color: var(--accent);
+    margin: 0 0 0.6rem;
+  }
+
+  .lede {
+    max-width: 42rem;
+    margin: 1rem 0 0;
+    font-size: 1.18rem;
+    line-height: 1.6;
+    color: var(--ink-soft);
+  }
+</style>
