@@ -1,0 +1,7 @@
+dist
+.astro
+.wrangler
+node_modules
+package-lock.json
+# Markdown is authored by people, agents and the CMS; don't reflow it.
+**/*.md
