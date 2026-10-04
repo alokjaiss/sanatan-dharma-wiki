@@ -3,6 +3,7 @@ import { unified } from '@astrojs/markdown-remark';
 import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
 import { site } from './src/config/site';
+import { rehypeFootnotesIgnore } from './src/lib/rehype-footnotes-ignore';
 import { rehypeScriptLang } from './src/lib/rehype-script-lang';
 import { remarkWikilinks } from './src/lib/remark-wikilinks';
 
@@ -20,7 +21,7 @@ export default defineConfig({
       gfm: true,
       smartypants: true,
       remarkPlugins: [remarkWikilinks],
-      rehypePlugins: [rehypeScriptLang],
+      rehypePlugins: [rehypeScriptLang, rehypeFootnotesIgnore],
     }),
   },
   vite: {

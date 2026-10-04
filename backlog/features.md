@@ -4,7 +4,7 @@ The Feature Builder routine takes the first unchecked item. Big phases are bette
 
 ## Small follow-ups
 
-- [ ] **Keep footnotes out of search results.** Add `data-pagefind-ignore` to the GFM footnotes section with a small rehype plugin. *Done when* a search for "gita" no longer lists "Footnotes" as a sub-result.
+- [x] **Keep footnotes out of search results.** Add `data-pagefind-ignore` to the GFM footnotes section with a small rehype plugin. *Done when* a search for "gita" no longer lists "Footnotes" as a sub-result.
 - [ ] **Automate the font build.** Run `scripts/fonts/subset-fonts.py` in a CI job when `@fontsource-variable/*` versions change, and fail if the committed output differs. *Done when* bumping a font package without regenerating fails CI.
 - [ ] **Show the review backlog on the home page.** A small "In preparation" counter of backlog items by collection. *Done when* the counts match `backlog/content.yaml`.
 

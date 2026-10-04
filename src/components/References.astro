@@ -18,7 +18,7 @@ const items = references.map((ref) => {
 
 {
   items.length > 0 && (
-    <section class="references" aria-labelledby="references-title">
+    <section class="references" aria-labelledby="references-title" data-pagefind-ignore>
       <h2 id="references-title">{t('entry.references')}</h2>
       <ol>
         {items.map(({ ref, before, after }) => (
