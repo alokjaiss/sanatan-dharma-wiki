@@ -1,22 +1,22 @@
 @import 'tailwindcss';
 
-/* Fonts: Noto covers every IAST / ISO 15919 letter and the Indic scripts as one family.
-   unicode-range subsets mean a page only downloads the scripts it uses. */
-@import '@fontsource-variable/noto-serif/wght.css';
-@import '@fontsource-variable/noto-serif/wght-italic.css';
-@import '@fontsource-variable/noto-serif-display/wght.css';
-@import '@fontsource-variable/noto-serif-devanagari/wght.css';
-@import '@fontsource-variable/noto-sans/wght.css';
+/* Fonts: Noto Serif cut to Latin + IAST by scripts/fonts/subset-fonts.py (a few KB per style
+   instead of Fontsource's whole Latin Extended block) and Noto Serif Devanagari pinned to its regular
+   weight. unicode-range means a page downloads only the scripts it uses. UI labels use the
+   system font. */
+@import './fonts.css';
 
 /* ── Tokens ─────────────────────────────────────────────────────────────────── */
 
 :root {
   color-scheme: light dark;
 
-  --font-body: 'Noto Serif Variable', 'Noto Serif Devanagari Variable', Georgia, serif;
-  --font-display: 'Noto Serif Display Variable', 'Noto Serif Variable', 'Noto Serif Devanagari Variable', Georgia, serif;
-  --font-ui: 'Noto Sans Variable', 'Noto Serif Devanagari Variable', system-ui, sans-serif;
-  --font-deva: 'Noto Serif Devanagari Variable', 'Noto Serif Variable', serif;
+  --font-body: 'Noto Serif Subset', 'Noto Serif Devanagari Subset', Georgia, serif;
+  --font-display: 'Noto Serif Display Subset', 'Noto Serif Subset', 'Noto Serif Devanagari Subset', Georgia, serif;
+  --font-ui: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Serif Subset',
+    'Noto Serif Devanagari Subset', sans-serif;
+  /* Latin characters inside Devanagari runs come from the Latin font already on the page. */
+  --font-deva: 'Noto Serif Subset', 'Noto Serif Devanagari Subset', serif;
 
   /* Paper and ink */
   --paper: #f7f1e6;
@@ -34,6 +34,8 @@
   --accent-hover: #7f2214;
   --accent-wash: #f4e1d8;
   --saffron: #c26a1b;
+  /* Saffron dark enough for small text on leaf and paper (AA). */
+  --saffron-ink: #8f4a0e;
 
   /* Verification */
   --draft-bg: #f6e6c0;
@@ -86,6 +88,7 @@
     --accent-hover: #ffb19b;
     --accent-wash: #3b2018;
     --saffron: #e5a05a;
+    --saffron-ink: #e5a05a;
     --draft-bg: #3a2c0c;
     --draft-ink: #f2cf78;
     --human-bg: #1d3323;
@@ -229,6 +232,18 @@ hr {
   height: 4px;
   border-top: 1px solid var(--rule-strong);
   border-bottom: 1px solid var(--rule-strong);
+}
+
+/* A native-script name, very faint behind a title. Drawn as generated content so it is neither
+   read aloud, indexed, nor measured as the page's main content. */
+.watermark::before {
+  content: attr(data-watermark);
+}
+
+/* A 5%-opacity ornament doesn't need the web font: the system's Devanagari face paints at once,
+   so the page's largest element never waits for a font download. */
+.watermark {
+  font-family: 'Nirmala UI', 'Kohinoor Devanagari', 'Devanagari Sangam MN', 'Noto Sans Devanagari', 'Noto Serif Devanagari', sans-serif !important;
 }
 
 .card-grid {
@@ -453,6 +468,11 @@ hr {
   text-decoration: none;
   font-family: var(--font-ui);
   margin-left: 0.25em;
+}
+
+/* A note cited many times gets one back-link, not a row of arrows. */
+.prose [data-footnote-backref] ~ [data-footnote-backref] {
+  display: none;
 }
 
 /* ── Motion ─────────────────────────────────────────────────────────────────── */

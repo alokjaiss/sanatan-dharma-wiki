@@ -125,6 +125,9 @@ describe('validateEntries', () => {
     const named = `${publishedTextBody}\n\nThe maṭha (${longName}) is old.`;
     expect(messages([publishedText({ aliases: [longName] }, named), stubPerson('vyasa')])).toEqual([]);
 
+    const title = `${publishedTextBody}\n\nSee *The Vedânta-Sûtras with the Commentary by Śaṅkarâkârya and Rāmānuja* for more.`;
+    expect(messages([publishedText({}, title), stubPerson('vyasa')])).toEqual([]);
+
     const italic = `${publishedTextBody}\n\nThe sūtra says *athāto brahmajijñāsā janmādy asya yataḥ śāstrayonitvāt* here.`;
     expect(messages([publishedText({}, italic), stubPerson('vyasa')])).toContainEqual(
       expect.stringContaining('Long italic IAST passage'),

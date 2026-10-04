@@ -123,7 +123,7 @@ const hasAny =
             {list(graph.disciples).map((disciple) => (
               <li>
                 <EntryLink slug={disciple.person} library={library} />
-                <span class="meta">{label('guru', disciple.kind)}</span>
+                <span class="meta">{label('discipleKind', disciple.kind)}</span>
               </li>
             ))}
           </ul>

@@ -82,13 +82,7 @@ const nativeLang = SCRIPT_LANG[data.nativeScript];
     data-pagefind-filter={`type:${collectionLabel(entry.collection, 'one')}`}
   >
     <header class="entry-header">
-      {
-        data.native && (
-          <p class="watermark" lang={nativeLang} aria-hidden="true" data-pagefind-ignore="all">
-            {data.native}
-          </p>
-        )
-      }
+      {data.native && <div class="watermark" lang={nativeLang} data-watermark={data.native} aria-hidden="true"></div>}
       <Breadcrumbs items={crumbs} />
       <p class="label kicker rise">{kicker}</p>
       <h1 class="page-title rise">{data.title}</h1>

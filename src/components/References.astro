@@ -7,30 +7,25 @@ interface Props {
 }
 
 const { references } = Astro.props;
+// Pieces around the title are joined as plain strings so no template whitespace leaks
+// between them ("Title . Publisher").
+const items = references.map((ref) => {
+  const lead = referenceLead(ref);
+  const after = [ref.publisher, ref.locator].filter(Boolean).join(', ');
+  return { ref, before: lead ? `${lead}. ` : '', after: after ? `. ${after}.` : '.' };
+});
 ---
 
 {
-  references.length > 0 && (
+  items.length > 0 && (
     <section class="references" aria-labelledby="references-title">
       <h2 id="references-title">{t('entry.references')}</h2>
       <ol>
-        {references.map((ref) => (
+        {items.map(({ ref, before, after }) => (
           <li>
             <span class="kind">{label('referenceKind', ref.kind)}</span>
-            <span class="citation">
-              {referenceLead(ref) && <span>{referenceLead(ref)}. </span>}
-              {ref.url ? (
-                <a href={ref.url} rel="noopener">
-                  <cite>{ref.title}</cite>
-                </a>
-              ) : (
-                <cite>{ref.title}</cite>
-              )}
-              {ref.publisher && <span>. {ref.publisher}</span>}
-              {ref.locator && <span>, {ref.locator}</span>}
-              <span>.</span>
-              {ref.note && <span class="note"> {ref.note}</span>}
-            </span>
+            {/* Kept on one line: whitespace between these parts would show before the full stop. */}
+            <span class="citation">{before}{ref.url ? <a href={ref.url} rel="noopener"><cite>{ref.title}</cite></a> : <cite>{ref.title}</cite>}{after}{ref.note && <span class="note"> {ref.note}</span>}</span>
           </li>
         ))}
       </ol>

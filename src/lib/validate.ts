@@ -319,9 +319,11 @@ export function verseGuard(lines: BodyLine[], allowedNames: readonly string[]): 
           run = 0;
         }
       }
+      // Footnote definitions hold citations, whose italic titles are not quotations.
+      if (/^\s*\[\^[^\]]+\]:/.test(line.text)) continue;
       for (const match of line.text.matchAll(/(?<![*_\p{L}\p{N}])([*_])(?![*_\s])(.+?)(?<![\s*_])\1(?![*_\p{L}\p{N}])/gu)) {
         const words = match[2].split(/\s+/).filter(Boolean);
-        if (words.length >= MAX_UNCITED_ITALIC_WORDS && hasIastDiacritics(match[2])) {
+        if (words.length >= MAX_UNCITED_ITALIC_WORDS && looksLikeSanskrit(words)) {
           findings.push({
             line: line.line,
             message: 'Long italic IAST passage outside a cited blockquote. Quote it in a cited blockquote, or paraphrase.',
@@ -331,6 +333,16 @@ export function verseGuard(lines: BodyLine[], allowedNames: readonly string[]): 
     }
   }
   return findings;
+}
+
+const ENGLISH_FUNCTION_WORDS = new Set(['the', 'of', 'and', 'with', 'by', 'in', 'a', 'an', 'to', 'on', 'for', 'from', 'is', 'as']);
+
+/** A run of IAST words with diacritics and almost no English, as opposed to an italic book title. */
+function looksLikeSanskrit(words: string[]): boolean {
+  const lower = words.map((word) => word.toLowerCase().replace(/[^\p{L}']/gu, ''));
+  const english = lower.filter((word) => ENGLISH_FUNCTION_WORDS.has(word)).length;
+  const diacritic = words.filter((word) => hasIastDiacritics(word)).length;
+  return english < 2 && diacritic >= 2;
 }
 
 function blocks(lines: BodyLine[]): BodyLine[][] {

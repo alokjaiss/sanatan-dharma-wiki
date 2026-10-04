@@ -11,6 +11,8 @@ export default defineConfig({
   trailingSlash: 'always',
   // Astro 7 defaults to JSX whitespace rules; prose templates need HTML rules.
   compressHTML: true,
+  // Pages carry ~10 KB of CSS; inlining it removes render-blocking requests.
+  build: { inlineStylesheets: 'always' },
   integrations: [sitemap()],
   markdown: {
     // Astro 7 defaults to the Sätteri pipeline; our remark plugins need unified.

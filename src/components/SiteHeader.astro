@@ -110,6 +110,7 @@ const links = COLLECTIONS.map((collection) => ({
   .brand-text {
     display: flex;
     flex-direction: column;
+    gap: 0.2rem;
     line-height: 1.1;
   }
 
@@ -122,6 +123,8 @@ const links = COLLECTIONS.map((collection) => ({
 
   .brand-native {
     font-size: 0.78rem;
+    /* Devanagari needs room above its headline for vowel signs. */
+    line-height: 1.4;
     color: var(--ink-faint);
   }
 
