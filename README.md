@@ -2,13 +2,40 @@
 
 An open, source-cited encyclopedia of **Sanātana Dharma**: the original texts, their authors and commentators, the ṛṣis, ācāryas and saints, their teachings, and the traditions that carry them.
 
-> **Status:** under construction (Phase 1, website MVP). The full plan is in [MASTER_PROMPT.md](MASTER_PROMPT.md).
+> **Status:** Phase 1 (website MVP). The full plan is in [MASTER_PROMPT.md](MASTER_PROMPT.md).
 
 ## Principles
 
 - Every claim is cited. Traditional and academic views appear side by side, each with its source.
 - Every tradition is described in its own terms. No tradition is ranked above another.
 - AI drafts, humans review: every change arrives as a pull request, and every page shows how far it has been verified.
+
+## Develop
+
+Requires Node 22.12 or later.
+
+```bash
+npm install
+npm run dev          # http://localhost:4321
+npm run build        # validate content, build, index for search
+npm run preview      # serve the build (search works here)
+npm run validate     # content integrity checks
+npm test             # unit tests
+npm run new -- texts katha-upanishad --stub
+```
+
+Read [docs/CONTENT_GUIDE.md](docs/CONTENT_GUIDE.md) before writing an entry. Decisions are logged in [docs/DECISIONS.md](docs/DECISIONS.md), and the queue of work is in [backlog/](backlog/).
+
+## Infrastructure
+
+| Service | Role |
+|---|---|
+| GitHub | Content (Markdown), history, review through pull requests, CI |
+| Vercel | Hosting, with a preview deployment for every pull request |
+| Supabase | Reader corrections and reviewer accounts (Phase 2) |
+| Cloudflare | R2 media storage, Turnstile on forms, DNS (Phase 2) |
+
+Secret names are listed in [.env.example](.env.example).
 
 ## Licence
 

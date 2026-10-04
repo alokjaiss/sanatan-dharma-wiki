@@ -1,0 +1,163 @@
+# Content backlog. File order is priority order: the Content Writer takes the first `todo` items.
+# status: todo | done | blocked. Notes are pointers for research, not facts to copy: every claim
+# still needs a source opened while writing (docs/CONTENT_GUIDE.md §1, rule 4).
+
+# ── Stubs other entries already link to: expand these first ──────────────────────────────────
+- { slug: mahabharata, collection: texts, title: Mahābhārata, tier: 1, status: todo, notes: "Structure (parvans), critical edition (BORI), frame narratives, Bhagavad Gītā within it." }
+- { slug: ramanuja, collection: people, title: Rāmānuja, tier: 1, status: todo, notes: "Life, teachers (Yādavaprakāśa, Yāmuna's lineage), nine works, Śrīvaiṣṇava institutions. Add gurus once their entries exist." }
+- { slug: madhvacharya, collection: people, title: Madhvācārya, tier: 1, status: todo, notes: "Life, works (commentaries on the prasthānatrayī), Uḍupi." }
+- { slug: vishishtadvaita, collection: traditions, title: Viśiṣṭādvaita, tier: 1, status: todo }
+- { slug: dvaita-vedanta, collection: traditions, title: Dvaita Vedānta, tier: 1, status: todo }
+- { slug: gaudapada, collection: people, title: Gauḍapāda, tier: 1, status: todo }
+- { slug: yoga-bhashya, collection: texts, title: Yoga Bhāṣya, tier: 1, status: todo }
+- { slug: badarayana, collection: people, title: Bādarāyaṇa, tier: 1, status: todo, notes: "OPEN QUESTION: find a citable source on the traditional identification of Bādarāyaṇa with Vyāsa and the scholarly debate about it; left out of the seed entries for lack of one." }
+- { slug: govinda-bhagavatpada, collection: people, title: Govinda Bhagavatpāda, tier: 1, status: todo }
+- { slug: sureshvara, collection: people, title: Sureśvara, tier: 1, status: todo }
+- { slug: padmapada, collection: people, title: Padmapāda, tier: 1, status: todo }
+- { slug: atman, collection: concepts, title: ātman, tier: 1, status: todo }
+- { slug: maya, collection: concepts, title: māyā, tier: 1, status: todo }
+- { slug: samkhya, collection: traditions, title: Sāṅkhya, tier: 1, status: todo }
+- { slug: mimamsa, collection: traditions, title: Pūrvamīmāṃsā, tier: 1, status: todo }
+- { slug: krishna, collection: deities, title: Kṛṣṇa, tier: 1, status: todo, notes: "Describe how different Vaiṣṇava schools understand Kṛṣṇa, with attribution (CONTENT_GUIDE rule 9)." }
+- { slug: kaladi, collection: places, title: Kālaṭi, tier: 1, status: todo }
+
+# ── Tier 1: the Vedic corpus ──────────────────────────────────────────────────────────────────
+- { slug: samaveda, collection: texts, title: Sāmaveda, tier: 1, status: todo }
+- { slug: yajurveda, collection: texts, title: Yajurveda, tier: 1, status: todo, notes: "Overview of the Śukla and Kṛṣṇa branches." }
+- { slug: shukla-yajurveda, collection: texts, title: Śukla Yajurveda, tier: 1, status: todo }
+- { slug: krishna-yajurveda, collection: texts, title: Kṛṣṇa Yajurveda, tier: 1, status: todo }
+- { slug: atharvaveda, collection: texts, title: Atharvaveda, tier: 1, status: todo }
+- { slug: brihadaranyaka-upanishad, collection: texts, title: Bṛhadāraṇyaka Upaniṣad, tier: 1, status: todo }
+- { slug: chandogya-upanishad, collection: texts, title: Chāndogya Upaniṣad, tier: 1, status: todo }
+- { slug: isha-upanishad, collection: texts, title: Īśa Upaniṣad, tier: 1, status: todo }
+- { slug: kena-upanishad, collection: texts, title: Kena Upaniṣad, tier: 1, status: todo }
+- { slug: katha-upanishad, collection: texts, title: Kaṭha Upaniṣad, tier: 1, status: todo, notes: "Naciketas and Yama." }
+- { slug: mundaka-upanishad, collection: texts, title: Muṇḍaka Upaniṣad, tier: 1, status: todo }
+- { slug: mandukya-upanishad, collection: texts, title: Māṇḍūkya Upaniṣad, tier: 1, status: todo }
+- { slug: taittiriya-upanishad, collection: texts, title: Taittirīya Upaniṣad, tier: 1, status: todo }
+- { slug: prashna-upanishad, collection: texts, title: Praśna Upaniṣad, tier: 1, status: todo }
+- { slug: aitareya-upanishad, collection: texts, title: Aitareya Upaniṣad, tier: 1, status: todo }
+- { slug: shvetashvatara-upanishad, collection: texts, title: Śvetāśvatara Upaniṣad, tier: 1, status: todo }
+- { slug: kaushitaki-upanishad, collection: texts, title: Kauṣītaki Upaniṣad, tier: 1, status: todo }
+- { slug: maitri-upanishad, collection: texts, title: Maitrī Upaniṣad, tier: 1, status: todo }
+
+# ── Tier 1: epics, darśana sūtras, Purāṇas, key commentaries ─────────────────────────────────
+- { slug: ramayana, collection: texts, title: Rāmāyaṇa, tier: 1, status: todo }
+- { slug: nyaya-sutra, collection: texts, title: Nyāya Sūtra, tier: 1, status: todo }
+- { slug: vaisheshika-sutra, collection: texts, title: Vaiśeṣika Sūtra, tier: 1, status: todo }
+- { slug: samkhya-karika, collection: texts, title: Sāṅkhya Kārikā, tier: 1, status: todo }
+- { slug: mimamsa-sutra, collection: texts, title: Mīmāṃsā Sūtra, tier: 1, status: todo }
+- { slug: bhagavata-purana, collection: texts, title: Bhāgavata Purāṇa, tier: 1, status: todo }
+- { slug: vishnu-purana, collection: texts, title: Viṣṇu Purāṇa, tier: 1, status: todo }
+- { slug: shiva-purana, collection: texts, title: Śiva Purāṇa, tier: 1, status: todo }
+- { slug: markandeya-purana, collection: texts, title: Mārkaṇḍeya Purāṇa, tier: 1, status: todo }
+- { slug: devi-mahatmya, collection: texts, title: Devī Māhātmya, tier: 1, status: todo, notes: "partOf markandeya-purana." }
+- { slug: mandukya-karika, collection: texts, title: Gauḍapādakārikā (Māṇḍūkya Kārikā), tier: 1, status: todo }
+- { slug: shri-bhashya, collection: texts, title: Śrī Bhāṣya, tier: 1, status: todo }
+- { slug: upadesha-sahasri, collection: texts, title: Upadeśasāhasrī, tier: 1, status: todo }
+
+# ── Tier 1: seers, authors and commentators ──────────────────────────────────────────────────
+- { slug: valmiki, collection: people, title: Vālmīki, tier: 1, status: todo }
+- { slug: yajnavalkya, collection: people, title: Yājñavalkya, tier: 1, status: todo }
+- { slug: uddalaka-aruni, collection: people, title: Uddālaka Āruṇi, tier: 1, status: todo }
+- { slug: gargi-vachaknavi, collection: people, title: Gārgī Vācaknavī, tier: 1, status: todo }
+- { slug: maitreyi, collection: people, title: Maitreyī, tier: 1, status: todo }
+- { slug: vasishtha, collection: people, title: Vasiṣṭha, tier: 1, status: todo }
+- { slug: vishvamitra, collection: people, title: Viśvāmitra, tier: 1, status: todo }
+- { slug: kapila, collection: people, title: Kapila, tier: 1, status: todo }
+- { slug: ishvarakrishna, collection: people, title: Īśvarakṛṣṇa, tier: 1, status: todo }
+- { slug: akshapada-gautama, collection: people, title: Akṣapāda Gautama, tier: 1, status: todo }
+- { slug: kanada, collection: people, title: Kaṇāda, tier: 1, status: todo }
+- { slug: jaimini, collection: people, title: Jaimini, tier: 1, status: todo }
+- { slug: shabara, collection: people, title: Śabara, tier: 1, status: todo }
+- { slug: kumarila-bhatta, collection: people, title: Kumārila Bhaṭṭa, tier: 1, status: todo }
+- { slug: prabhakara-mishra, collection: people, title: Prabhākara Miśra, tier: 1, status: todo }
+- { slug: mandana-mishra, collection: people, title: Maṇḍana Miśra, tier: 1, status: todo }
+- { slug: vachaspati-mishra, collection: people, title: Vācaspati Miśra, tier: 1, status: todo }
+- { slug: prakashatman, collection: people, title: Prakāśātman, tier: 1, status: todo }
+- { slug: vidyaranya, collection: people, title: Vidyāraṇya, tier: 1, status: todo }
+- { slug: madhusudana-sarasvati, collection: people, title: Madhusūdana Sarasvatī, tier: 1, status: todo }
+- { slug: nathamuni, collection: people, title: Nāthamuni, tier: 1, status: todo }
+- { slug: yamunacharya, collection: people, title: Yāmunācārya, tier: 1, status: todo }
+- { slug: vedanta-deshika, collection: people, title: Vedānta Deśika, tier: 1, status: todo }
+- { slug: nimbarka, collection: people, title: Nimbārka, tier: 1, status: todo }
+- { slug: vallabhacharya, collection: people, title: Vallabhācārya, tier: 1, status: todo }
+- { slug: chaitanya-mahaprabhu, collection: people, title: Caitanya, tier: 1, status: todo }
+- { slug: rupa-goswami, collection: people, title: Rūpa Gosvāmī, tier: 1, status: todo }
+- { slug: jiva-goswami, collection: people, title: Jīva Gosvāmī, tier: 1, status: todo }
+- { slug: abhinavagupta, collection: people, title: Abhinavagupta, tier: 1, status: todo }
+- { slug: vasugupta, collection: people, title: Vasugupta, tier: 1, status: todo }
+- { slug: utpaladeva, collection: people, title: Utpaladeva, tier: 1, status: todo }
+- { slug: prashastapada, collection: people, title: Praśastapāda, tier: 1, status: todo }
+- { slug: vatsyayana-pakshilasvamin, collection: people, title: Vātsyāyana Pakṣilasvāmin, tier: 1, status: todo, notes: "Author of the Nyāya Bhāṣya; disambiguate from other Vātsyāyanas." }
+- { slug: sayana, collection: people, title: Sāyaṇa, tier: 1, status: todo }
+- { slug: bhoja, collection: people, title: Bhoja, tier: 1, status: todo }
+- { slug: vijnanabhikshu, collection: people, title: Vijñānabhikṣu, tier: 1, status: todo }
+
+# ── Tier 1: traditions ────────────────────────────────────────────────────────────────────────
+- { slug: nyaya, collection: traditions, title: Nyāya, tier: 1, status: todo }
+- { slug: vaisheshika, collection: traditions, title: Vaiśeṣika, tier: 1, status: todo }
+- { slug: dvaitadvaita, collection: traditions, title: Dvaitādvaita, tier: 1, status: todo }
+- { slug: shuddhadvaita, collection: traditions, title: Śuddhādvaita, tier: 1, status: todo }
+- { slug: achintya-bheda-abheda, collection: traditions, title: Acintya-bhedābheda, tier: 1, status: todo }
+- { slug: shaivism, collection: traditions, title: Śaivism, tier: 1, status: todo }
+- { slug: shaiva-siddhanta, collection: traditions, title: Śaiva Siddhānta, tier: 1, status: todo }
+- { slug: kashmir-shaivism, collection: traditions, title: Kashmir Śaivism (Trika), tier: 1, status: todo }
+- { slug: pashupata, collection: traditions, title: Pāśupata, tier: 1, status: todo }
+- { slug: vaishnavism, collection: traditions, title: Vaiṣṇavism, tier: 1, status: todo }
+- { slug: shri-vaishnavism, collection: traditions, title: Śrīvaiṣṇavism, tier: 1, status: todo }
+- { slug: gaudiya-vaishnavism, collection: traditions, title: Gauḍīya Vaiṣṇavism, tier: 1, status: todo }
+- { slug: pushtimarg, collection: traditions, title: Puṣṭimārga, tier: 1, status: todo }
+- { slug: nimbarka-sampradaya, collection: traditions, title: Nimbārka Sampradāya, tier: 1, status: todo }
+- { slug: ramanandi-sampradaya, collection: traditions, title: Rāmānandī Sampradāya, tier: 1, status: todo }
+- { slug: warkari, collection: traditions, title: Vārkarī, tier: 1, status: todo }
+- { slug: shaktism, collection: traditions, title: Śāktism, tier: 1, status: todo }
+- { slug: shrividya, collection: traditions, title: Śrīvidyā (Śrīkula), tier: 1, status: todo }
+- { slug: kalikula, collection: traditions, title: Kālīkula, tier: 1, status: todo }
+- { slug: smarta-tradition, collection: traditions, title: Smārta tradition, tier: 1, status: todo }
+- { slug: dashanami-sampradaya, collection: traditions, title: Daśanāmī Sampradāya, tier: 1, status: todo }
+
+# ── Tier 1: concepts ──────────────────────────────────────────────────────────────────────────
+- { slug: karma, collection: concepts, title: karma, tier: 1, status: todo }
+- { slug: samsara, collection: concepts, title: saṃsāra, tier: 1, status: todo }
+- { slug: moksha, collection: concepts, title: mokṣa, tier: 1, status: todo }
+- { slug: bhakti, collection: concepts, title: bhakti, tier: 1, status: todo }
+- { slug: jnana, collection: concepts, title: jñāna, tier: 1, status: todo }
+- { slug: yoga, collection: concepts, title: yoga (concept), tier: 1, status: todo, notes: "The concept across texts; the school is yoga-darshana." }
+- { slug: rta, collection: concepts, title: ṛta, tier: 1, status: todo }
+- { slug: yajna, collection: concepts, title: yajña, tier: 1, status: todo }
+- { slug: purushartha, collection: concepts, title: puruṣārtha, tier: 1, status: todo }
+- { slug: ishvara, collection: concepts, title: Īśvara, tier: 1, status: todo }
+- { slug: avidya, collection: concepts, title: avidyā, tier: 1, status: todo }
+- { slug: adhyasa, collection: concepts, title: adhyāsa, tier: 1, status: todo }
+- { slug: prakriti, collection: concepts, title: prakṛti, tier: 1, status: todo }
+- { slug: purusha, collection: concepts, title: puruṣa, tier: 1, status: todo }
+- { slug: guna, collection: concepts, title: guṇa, tier: 1, status: todo }
+- { slug: avatara, collection: concepts, title: avatāra, tier: 1, status: todo }
+- { slug: ahimsa, collection: concepts, title: ahiṃsā, tier: 1, status: todo }
+- { slug: tapas, collection: concepts, title: tapas, tier: 1, status: todo }
+- { slug: samadhi, collection: concepts, title: samādhi, tier: 1, status: todo }
+- { slug: mantra, collection: concepts, title: mantra, tier: 1, status: todo }
+- { slug: om, collection: concepts, title: Oṃ (praṇava), tier: 1, status: todo }
+- { slug: pramana, collection: concepts, title: pramāṇa, tier: 1, status: todo }
+- { slug: guru, collection: concepts, title: guru, tier: 1, status: todo }
+- { slug: lila, collection: concepts, title: līlā, tier: 1, status: todo }
+- { slug: prasthana-traya, collection: concepts, title: prasthānatrayī, tier: 1, status: todo }
+- { slug: apaurusheya, collection: concepts, title: apauruṣeya, tier: 1, status: todo }
+- { slug: shruti-and-smriti, collection: concepts, title: Śruti and smṛti, tier: 1, status: todo }
+
+# ── Written (Phase 1 seed) ────────────────────────────────────────────────────────────────────
+- { slug: rigveda, collection: texts, title: Ṛgveda, tier: 1, status: done }
+- { slug: bhagavad-gita, collection: texts, title: Bhagavad Gītā, tier: 1, status: done }
+- { slug: brahma-sutra, collection: texts, title: Brahma Sūtras, tier: 1, status: done }
+- { slug: brahma-sutra-bhashya-shankara, collection: texts, title: Brahma Sūtra Bhāṣya (Śaṅkara), tier: 1, status: done }
+- { slug: yoga-sutra, collection: texts, title: Yoga Sūtras, tier: 1, status: done }
+- { slug: vyasa, collection: people, title: Vyāsa, tier: 1, status: done }
+- { slug: adi-shankaracharya, collection: people, title: Ādi Śaṅkarācārya, tier: 1, status: done }
+- { slug: patanjali, collection: people, title: Patañjali, tier: 1, status: done }
+- { slug: vedanta, collection: traditions, title: Vedānta, tier: 1, status: done }
+- { slug: advaita-vedanta, collection: traditions, title: Advaita Vedānta, tier: 1, status: done }
+- { slug: yoga-darshana, collection: traditions, title: Yoga darśana, tier: 1, status: done }
+- { slug: brahman, collection: concepts, title: brahman, tier: 1, status: done }
+- { slug: dharma, collection: concepts, title: dharma, tier: 1, status: done }
+- { slug: sringeri-sharada-peetham, collection: places, title: Śṛṅgeri Śāradā Pīṭham, tier: 1, status: done }

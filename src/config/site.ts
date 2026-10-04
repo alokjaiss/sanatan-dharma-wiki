@@ -12,8 +12,12 @@ export const site = {
   tagline: 'An open, source-cited encyclopedia of Sanātana Dharma',
   description:
     'The texts of Sanātana Dharma, their authors and commentators, the ācāryas and saints, their teachings and the traditions that carry them. Every claim is cited.',
-  /** Canonical origin. Set SITE_URL in CI / the host once the production URL is known. */
-  url: process.env.SITE_URL ?? 'http://localhost:4321',
+  /** Canonical origin: SITE_URL if set, else Vercel's production domain, else local dev. */
+  url:
+    process.env.SITE_URL ??
+    (process.env.VERCEL_PROJECT_PRODUCTION_URL
+      ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+      : 'http://localhost:4321'),
   launched: LAUNCHED || process.env.SITE_LAUNCHED === 'true',
   repo: {
     slug: 'alokjaiss/sanatan-dharma-wiki',

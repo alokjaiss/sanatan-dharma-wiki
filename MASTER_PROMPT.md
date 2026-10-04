@@ -19,7 +19,9 @@ An open, source-cited encyclopedia of **Sanātana Dharma**: the original texts, 
 |---|---|---|
 | Working name | **Sanatan Dharma Wiki** | Alternative: *Sanātana Kośa* (सनातन कोश). Set once in `src/config/site.ts`. |
 | Stack | Astro · Markdown in git · Keystatic CMS · Pagefind · Tailwind | Rationale in §3 |
-| Hosting | Cloudflare (free tier); `*.workers.dev` URL first, custom domain before launch | Vercel works equally well |
+| Hosting | **Vercel** serves the site, with a preview deployment for every PR; `*.vercel.app` URL first, custom domain before launch | Decided 2026-10-04 (was Cloudflare) |
+| Database | **Supabase** (Postgres + Auth) for data people send *to* the site: reader corrections, expert-reviewer accounts, review queue | Entries themselves stay Markdown in git, so every AI change remains a reviewable diff |
+| Storage and edge | **Cloudflare**: R2 for images, manuscript scans and audio; Turnstile on public forms; DNS for the custom domain | |
 | Repository | GitHub `alokjaiss/sanatan-dharma-wiki`, **public from day one** | On the free GitHub plan, only public repos get branch protection and unlimited Actions minutes. Content is openly licensed anyway. |
 | Search engines | `noindex` everywhere until `launched: true` in site config | Lets you build in the open without being indexed |
 | Language | English prose; every name also in IAST and native script; Hindi edition in Phase 6 | UI strings go through `t()` from day one |
@@ -78,7 +80,9 @@ An open, source-cited encyclopedia of **Sanātana Dharma**: the original texts, 
 | Styling | Tailwind CSS + a small set of hand-built components | |
 | Fonts | Self-hosted via Fontsource: a serif that renders every IAST character (check ṝ and ḹ; Noto Serif is the safe default), Noto Serif Devanagari or Tiro Devanagari Sanskrit (Vedic accents); other Indic scripts loaded only where used | |
 | Transliteration | `@indic-transliteration/sanscript` (Phase 4) | Devanagari ↔ IAST ↔ regional scripts |
-| Hosting | Cloudflare: static pages plus the few on-demand routes Keystatic needs; a preview deployment per PR | Free, global CDN, preview URLs for reviewing agent PRs |
+| Hosting | Vercel: static pages plus the few serverless routes Keystatic and the forms need; a preview deployment per PR | Global CDN, preview URLs for reviewing agent PRs |
+| Database | Supabase: Postgres with row-level security, Supabase Auth for reviewers | Dynamic data only; content stays in git |
+| Media and edge | Cloudflare R2 (media files, zero egress fees), Turnstile (bot protection on forms), DNS | |
 | CI | GitHub Actions: validate → test → type-check → build on every PR | Humans and agents pass the same gates |
 
 If Keystatic's GitHub mode can't run on the host, use Sveltia CMS (static admin, GitHub backend) and log the switch in `docs/DECISIONS.md`. Keystatic lacks built-in multi-locale editing, so revisit the CMS choice at the start of Phase 6.
@@ -501,7 +505,7 @@ Milestones. Commit after each one, and `npm run build` must pass before you do:
 8. **Ship.**
    - `git init`, then create the GitHub repo with `gh`.
    - CI workflow and branch protection on `main`.
-   - Cloudflare deployment with a preview URL for every PR.
+   - Vercel deployment with a preview URL for every PR.
 
 **Acceptance criteria**
 
@@ -535,11 +539,22 @@ Milestones. Commit after each one, and `npm run build` must pass before you do:
    - the most-linked stubs
    - entries missing template sections
    - counts by status and verification level
-6. Cloudflare Web Analytics (cookie-less).
+6. Cookie-less analytics (Vercel Web Analytics).
+7. **Supabase:** a project with these pieces.
+   - **`corrections` table.** Anyone can insert through row-level security; only maintainers can read. *Report an error* gets a form, so readers without GitHub accounts can report. A maintainer action turns a correction into a GitHub issue.
+   - **`reviewer_applications` table.** Supabase Auth accounts for approved reviewers, who can mark entries `human-reviewed` or `expert-verified` through the CMS.
+   - **Schema in `supabase/migrations/`,** applied in CI, with generated TypeScript types.
+8. **Cloudflare:**
+   - an R2 bucket for media (images, manuscript scans, audio), referenced from entries' `image.src`
+   - Turnstile on the corrections and reviewer forms
+   - DNS for the custom domain
+9. **Configuration:** secrets live in Vercel environment variables and GitHub Actions secrets, never in the repo. `.env.example` lists them.
 
 **Acceptance criteria**
 
 - [ ] From the deployed site you can log in and edit an entry. The change arrives as a PR with green CI, and merging deploys it.
+- [ ] A reader without a GitHub account can submit a correction (Turnstile-protected); it lands in Supabase and cannot be read back by the public.
+- [ ] An image uploaded to R2 renders on an entry page.
 - [ ] A person created in the CMS with a guru appears under that guru's Disciples after deploy.
 - [ ] `check:cms` fails when a field exists on only one side.
 
@@ -613,7 +628,7 @@ specified in §9, using the stack in §3, the content model in §5 and the edito
 - Work milestone by milestone (1 → 8). After each, run `npm run build` (and `npm run validate`
   once it exists), fix every error, and commit with a conventional commit message.
 - Use the latest stable versions and check current documentation for Astro, Pagefind and
-  Cloudflare instead of relying on memory.
+  Vercel, Supabase and Cloudflare instead of relying on memory.
 - If a frontend-design skill is available, use it for the visual system, following §7.
 - Where this spec is silent, choose the simplest option that keeps later phases possible and
   record it in docs/DECISIONS.md.

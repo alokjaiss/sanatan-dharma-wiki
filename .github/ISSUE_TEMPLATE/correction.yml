@@ -1,0 +1,40 @@
+name: Correction
+description: Report an error in an entry
+title: "Correction: "
+labels: ["correction", "needs-review"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for helping keep the encyclopedia accurate. Please point to a source if you can: corrections with sources are fixed fastest.
+  - type: input
+    id: entry
+    attributes:
+      label: Entry
+      description: The page address (filled in automatically from "Report an error").
+      placeholder: https://…/texts/bhagavad-gita/
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: What is wrong?
+      description: Quote the sentence or field, and say what should change.
+    validations:
+      required: true
+  - type: textarea
+    id: source
+    attributes:
+      label: Source
+      description: A book, edition, article or URL that supports the correction.
+  - type: dropdown
+    id: kind
+    attributes:
+      label: Kind of problem
+      options:
+        - Factual error
+        - Misattributed quotation or verse
+        - Wrong date or attribution
+        - Unfair or one-sided description of a tradition
+        - Broken link or typo
+        - Other
