@@ -3,6 +3,7 @@ import { unified } from '@astrojs/markdown-remark';
 import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
 import { site } from './src/config/site';
+import { remarkWikilinks } from './src/lib/remark-wikilinks';
 
 export default defineConfig({
   site: site.url,
@@ -12,7 +13,7 @@ export default defineConfig({
   integrations: [sitemap()],
   markdown: {
     // Astro 7 defaults to the Sätteri pipeline; our remark plugins need unified.
-    processor: unified({ gfm: true, smartypants: true }),
+    processor: unified({ gfm: true, smartypants: true, remarkPlugins: [remarkWikilinks] }),
   },
   vite: {
     plugins: [tailwindcss()],
