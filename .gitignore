@@ -28,3 +28,6 @@ Thumbs.db
 # test and tooling artefacts
 coverage/
 .lighthouseci/
+
+# Vercel project link (local only)
+.vercel
